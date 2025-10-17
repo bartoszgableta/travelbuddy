@@ -1,6 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthProps, Credentials } from "@/types/auth";
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
+import {
+  fetchAuthSession,
+  confirmSignUp as cognitoConfirmSignUp,
+  resendSignUpCode,
+  signIn as cognitoSignIn,
+  signOut as cognitoSignOut,
+  signUp as cognitoSignUp,
+} from "aws-amplify/auth";
 import { amplifyConfig } from "@/config/amplifyConfig";
 import axios from "axios";
 
@@ -32,7 +40,7 @@ export const AuthProvider = ({ children }: any) => {
   const signUp = async (credentials: Credentials) => {
     const { email, password } = credentials;
     try {
-      const response = await Auth.signUp({ username: email, password });
+      const response = await cognitoSignUp({ username: email, password });
     } catch (error) {
       console.error("Sign up error:", error);
       throw error;
@@ -42,7 +50,7 @@ export const AuthProvider = ({ children }: any) => {
   const resendSignUp = async (credentials: Credentials) => {
     const { email } = credentials;
     try {
-      const response = await Auth.resendSignUp(email);
+      const response = await resendSignUpCode({ username: email });
     } catch (error) {
       console.error("Resend sign up error:", error);
       throw error;
@@ -51,7 +59,10 @@ export const AuthProvider = ({ children }: any) => {
 
   const confirmSignUp = async (email: string, code: string) => {
     try {
-      const response = await Auth.confirmSignUp(email, code);
+      const response = await cognitoConfirmSignUp({
+        username: email,
+        confirmationCode: code,
+      });
     } catch (error) {
       console.error("Confirm sign up error:", error);
       throw error;
@@ -61,7 +72,7 @@ export const AuthProvider = ({ children }: any) => {
   const signIn = async (credentials: Credentials) => {
     const { email, password } = credentials;
     try {
-      const response = await Auth.signIn({
+      const response = await cognitoSignIn({
         username: email,
         password,
       });
@@ -75,7 +86,7 @@ export const AuthProvider = ({ children }: any) => {
 
   const signOut = async () => {
     try {
-      const response = await Auth.signOut();
+      const response = await cognitoSignOut();
       cachedAccessToken = null;
       setIsAuthenticated(false);
       return response;
@@ -93,13 +104,20 @@ export const AuthProvider = ({ children }: any) => {
       return cachedAccessToken;
     }
 
-    try {
-      const session = await Auth.currentSession();
-      cachedAccessToken = session.getAccessToken().getJwtToken();
-      tokenExpiration = session.getAccessToken().getExpiration() * 1000;
-    } catch (error) {
+    const session = await fetchAuthSession();
+
+    if (
+      session.tokens === undefined ||
+      session.tokens.accessToken.payload.exp === undefined
+    ) {
       cachedAccessToken = null;
+      setIsAuthenticated(false);
+      return null;
     }
+
+    cachedAccessToken = session.tokens.accessToken.toString();
+    tokenExpiration = session.tokens.accessToken.payload.exp * 1000;
+
     setIsAuthenticated(!!cachedAccessToken);
     return cachedAccessToken;
   };
