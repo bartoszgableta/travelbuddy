@@ -58,6 +58,7 @@ export async function schedulePushNotification(
       body,
     },
     trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
       date,
     },
   });
