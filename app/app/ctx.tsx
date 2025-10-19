@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: any) => {
       setIsAuthenticated(true);
       return response;
     } catch (error: any) {
-      console.error("Sign in error:", error.response);
+      console.error("Sign in error:", error);
       throw error;
     }
   };
