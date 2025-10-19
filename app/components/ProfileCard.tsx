@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 import { PROFILE_ICON, STAR_ICON } from "@/constants/Icons";
 import { MD3ThemeExtended } from "@/constants/Themes";
 import { useTheme } from "react-native-paper";
@@ -27,7 +27,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       onPress={onPress}
       onLongPress={onLongPress}
     >
-      <Icon
+      <MaterialIcons
         name={PROFILE_ICON}
         size={32}
         color={theme.colors.onSurfaceVariant}
@@ -37,7 +37,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <Text style={styles.text}>{text}</Text>
 
       {showStar && (
-        <Icon
+        <MaterialIcons
           name={STAR_ICON}
           size={28}
           color={theme.colors.onSurfaceVariant}

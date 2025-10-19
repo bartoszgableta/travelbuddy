@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -14,7 +13,10 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { EmailTextInput } from "@/components/auth/EmailTextInput";
 import { PasswordTextInput } from "@/components/auth/PasswordTextInput";
 import { validateEmail, validatePassword } from "@/utils/validations";

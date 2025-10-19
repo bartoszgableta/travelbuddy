@@ -25,10 +25,11 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import ProfileOptionsList from "@/components/ProfileOptionsList";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons";
+
 import {
   useEditProfile,
   useGetFavouriteProfiles,
@@ -45,6 +46,7 @@ import {
 import { useAuth } from "@/app/ctx";
 import ActionButtons from "@/components/ActionButtons";
 import { useGetItems } from "@/composables/useCategoryCondition";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ManageProfileCategoryViewProps {
   profileType: ProfileType;
@@ -247,7 +249,7 @@ const ManageProfileCategoryView: React.FC<ManageProfileCategoryViewProps> = ({
           onPress={toggleFavourite}
         >
           <Text style={styles.rightText}>Ulubiony</Text>
-          <Icon
+          <MaterialIcons
             name={
               profile?.id === favouriteProfiles[profileType]
                 ? STAR_ICON

@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -13,10 +12,12 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { PasswordTextInput } from "@/components/auth/PasswordTextInput";
 import { CodeTextInput } from "@/components/auth/CodeTextInput";
-import { Auth } from "aws-amplify";
 import {
   validateCode,
   validatePassword,
@@ -24,6 +25,7 @@ import {
 } from "@/utils/validations";
 import LoadingView from "@/views/LoadingView";
 import { MD3ThemeExtended } from "@/constants/Themes";
+import { confirmResetPassword } from "aws-amplify/auth";
 
 // It would be good if we could calculate this value dynamically, but I had some issues with that
 const BOTTOM_VIEW_HEIGHT = 54;
@@ -84,7 +86,11 @@ export default function ForgotPasswordConfirm() {
     setIsLoading(true);
 
     try {
-      await Auth.forgotPasswordSubmit(email, confirmationCode, newPassword);
+      await confirmResetPassword({
+        username: email,
+        confirmationCode,
+        newPassword,
+      });
       router.navigate("/forgot-password/success");
     } catch (error: any) {
       const errorMessage =

@@ -1,13 +1,13 @@
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
 import { router } from "expo-router";
 import { useTheme, Text, Button } from "react-native-paper";
 import { MD3ThemeExtended } from "@/constants/Themes";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Confirmation() {
   const theme = useTheme() as MD3ThemeExtended;

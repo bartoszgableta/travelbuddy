@@ -1,12 +1,12 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Divider, useTheme } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons";
 
 type Props = {
   onPress: () => void;
   label: string;
-  icon: string;
+  icon: any;
 };
 
 const ActionMenuListItem: React.FC<Props> = ({ onPress, label, icon }) => {
@@ -21,7 +21,7 @@ const ActionMenuListItem: React.FC<Props> = ({ onPress, label, icon }) => {
     <>
       <Divider />
       <TouchableOpacity style={styles.container} onPress={onPress}>
-        <Icon name={icon} size={20} color={contentColor} />
+        <MaterialIcons name={icon} size={20} color={contentColor} />
         <Text style={[styles.label, { color: contentColor }]}>{label}</Text>
       </TouchableOpacity>
     </>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -12,7 +11,10 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { CodeTextInput } from "@/components/auth/CodeTextInput";
 import { MD3ThemeExtended } from "@/constants/Themes";
 import { validateCode } from "@/utils/validations";

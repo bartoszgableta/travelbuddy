@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
@@ -12,11 +11,14 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { EmailTextInput } from "@/components/auth/EmailTextInput";
 import { validateEmail } from "@/utils/validations";
 import { MD3ThemeExtended } from "@/constants/Themes";
-import { Auth } from "aws-amplify";
+import { resetPassword } from "aws-amplify/auth";
 
 // It would be good if we could calculate this value dynamically, but I had some issues with that
 const BOTTOM_VIEW_HEIGHT = 54;
@@ -55,7 +57,7 @@ export default function ForgotPasswordEmail() {
     if (!validateForm()) return;
 
     try {
-      await Auth.forgotPassword(email);
+      await resetPassword({ username: email });
       router.navigate({
         pathname: "/forgot-password/confirm",
         params: { email },
