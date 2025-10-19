@@ -15,7 +15,18 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.zpitravelbuddy.travelbuddy"
+      "bundleIdentifier": "com.zpitravelbuddy.travelbuddy",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true,
+          "NSExceptionDomains": {
+            "ec2-3-65-198-37.eu-central-1.compute.amazonaws.com": {
+              "NSExceptionAllowsInsecureHTTPLoads": true,
+              "NSIncludesSubdomains": true
+            }
+          }
+        }
+      }
     },
     "android": {
       "package": "com.zpitravelbuddy.travelbuddy",
@@ -47,6 +58,9 @@
         {
           "android": {
             "usesCleartextTraffic": true
+          },
+          "ios": {
+            "flipper": true
           }
         }
       ]

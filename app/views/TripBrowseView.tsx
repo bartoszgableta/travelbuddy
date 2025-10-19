@@ -137,7 +137,7 @@ const TripBrowseView = () => {
       } else {
         console.error(
           `Error fetching trips from ${endpoint}`,
-          error.response?.data || error,
+          error.response?.data || JSON.stringify(error),
         );
       }
     }
