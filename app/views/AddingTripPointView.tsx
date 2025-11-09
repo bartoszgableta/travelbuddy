@@ -256,6 +256,7 @@ const AddingTripPointView = () => {
   const handleCreateRequest = async (tripPointRequest: TripPointRequest) => {
     try {
       setLoading(true);
+      console.log(tripPointRequest, API_TRIP_POINT);
       const response = await api!.post<TripPointDetails>(
         API_TRIP_POINT,
         tripPointRequest,
@@ -272,16 +273,17 @@ const AddingTripPointView = () => {
         router.navigate(`/trips/details/${trip_id}/day/${day_id}`);
       }
     } catch (err: any) {
+      console.log(JSON.stringify(err));
       console.error(
         "Błąd podczas zapisywania punktu: ",
-        JSON.stringify(err.response.data),
+        JSON.stringify(err.response),
       );
       setErrors((prev) => ({
         ...prev,
-        ["api"]: err.response.data,
+        ["api"]: err.response,
       }));
       showSnackbar(
-        "Nie dodano punktu wycieczki. " + handleErrorMessage(err.response.data),
+        "Nie dodano punktu wycieczki. " + handleErrorMessage(err.response),
       );
     } finally {
       setLoading(false);

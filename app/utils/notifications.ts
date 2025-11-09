@@ -6,9 +6,10 @@ import { Colors } from "@/constants/Colors";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -19,8 +20,12 @@ export default function Notification() {
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
-  const notificationListener = useRef<Notifications.Subscription | undefined>();
-  const responseListener = useRef<Notifications.Subscription | undefined>();
+  const notificationListener = useRef<
+    Notifications.EventSubscription | undefined
+  >(undefined);
+  const responseListener = useRef<Notifications.EventSubscription | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
@@ -34,12 +39,10 @@ export default function Notification() {
 
     return () => {
       if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current,
-        );
+        notificationListener.current.remove();
       }
       if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
+        responseListener.current.remove();
       }
     };
   }, []);

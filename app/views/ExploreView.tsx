@@ -100,7 +100,7 @@ const ExploreView = ({ tripId }: ExploreViewProps) => {
         ),
       );
     } catch (error: any) {
-      console.error(error.response.data);
+      console.error(error);
     }
   };
 
@@ -109,7 +109,7 @@ const ExploreView = ({ tripId }: ExploreViewProps) => {
       const response = await api!.get("/trips/current");
       setCurrentTrips(response.data);
     } catch (error: any) {
-      console.log(error.response.data);
+      console.log(error);
     }
   };
 

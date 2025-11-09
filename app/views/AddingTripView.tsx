@@ -253,7 +253,7 @@ const AddingTripView = () => {
       router.navigate("/trips");
       showSnackbar("Zapisano wycieczkę!", "success");
     } catch (error: any) {
-      console.error(error.response.data);
+      console.error(error.response);
       showSnackbar("Wystąpił błąd podczas zapisywania wycieczki", "error");
     } finally {
       setLoading(false);

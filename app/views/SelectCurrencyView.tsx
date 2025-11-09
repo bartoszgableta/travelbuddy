@@ -77,8 +77,12 @@ const SelectCurrencyView = () => {
   };
 
   const handleConfirm = () => {
-    router.back();
-    router.setParams({ currency: selectedCurrency });
+    router.dismissTo({
+      pathname: "/(auth)/(tabs)/trips/add",
+      params: {
+        currency: selectedCurrency,
+      },
+    });
   };
 
   return (

@@ -28,10 +28,12 @@ const DestinationCard = ({ destination }: { destination: Destination }) => {
   useAnimatedKeyboard();
 
   const handleSelect = () => {
-    router.back();
-    router.setParams({
-      destinationId: id,
-      destinationName: `${name}, ${country}`,
+    router.dismissTo({
+      pathname: "/(auth)/(tabs)/trips/add",
+      params: {
+        destinationId: id,
+        destinationName: `${name}, ${country}`,
+      },
     });
   };
 
