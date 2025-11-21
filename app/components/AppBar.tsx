@@ -1,4 +1,4 @@
-import { Appbar, Menu, useTheme } from "react-native-paper";
+import { Appbar, Menu, useTheme, PaperProvider } from "react-native-paper";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import { useState } from "react";
@@ -23,11 +23,12 @@ export const AppBar = ({ options, navigation }: NativeStackHeaderProps) => {
   // Menu state
   const [visible, setVisible] = useState(false);
 
-  const openMenu = () => {
-    setVisible(true);
+  const toggleMenu = () => {
+    setVisible((prev) => !prev);
   };
 
-  const handleDismiss = () => {
+  const closeMenu = () => {
+    console.log("dismiss");
     setVisible(false);
   };
 
@@ -49,13 +50,13 @@ export const AppBar = ({ options, navigation }: NativeStackHeaderProps) => {
       {actions.map((action: Action, index: number) =>
         action.hasMenu ? (
           <Menu
-            key={index}
-            onDismiss={handleDismiss}
+            key={Number(visible)}
+            onDismiss={closeMenu}
             visible={visible}
             anchor={
               <Appbar.Action
                 icon={action?.icon ?? MENU_ICON}
-                onPress={openMenu}
+                onPress={toggleMenu}
                 color={action?.color ?? theme.colors.onSurface}
               />
             }
@@ -67,7 +68,7 @@ export const AppBar = ({ options, navigation }: NativeStackHeaderProps) => {
                 leadingIcon={menuAction.icon}
                 onPress={() => {
                   menuAction?.onPress?.();
-                  handleDismiss();
+                  closeMenu();
                 }}
                 title={menuAction.title}
                 theme={{

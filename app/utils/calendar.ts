@@ -56,8 +56,15 @@ export async function addEventToMainCalendar(
   const calendarId = await getDefaultCalendar();
 
   try {
-    const eventId = await Calendar.createEventAsync(calendarId, data);
-    Calendar.openEventInCalendar(eventId);
+    const result = await Calendar.createEventInCalendarAsync({
+      ...data,
+      calendarId,
+    });
+
+    if (result.id) {
+      await Calendar.openEventInCalendarAsync({ id: result.id });
+    }
+
     return true;
   } catch (error) {
     console.error(error);
