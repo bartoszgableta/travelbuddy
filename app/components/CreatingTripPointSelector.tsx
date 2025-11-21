@@ -146,7 +146,7 @@ const createStyles = (theme: MD3Theme) =>
     buttonsContainer: {
       flexDirection: "row",
       flexWrap: "wrap",
-      justifyContent: "flex-start",
+      justifyContent: "center",
       marginVertical: 10,
     },
     option: {

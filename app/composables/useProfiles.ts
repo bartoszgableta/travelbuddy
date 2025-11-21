@@ -161,9 +161,9 @@ export const useGetFavouriteProfiles = (
         Condition: response.data.conditionProfileId,
       });
     } catch (err: any) {
-      console.error(err.response.data);
       if (err.response && err.response.status !== 404) {
         setError("Wystąpił błąd podczas pobierania ulubionych profili.");
+        console.error(err.response.data);
       }
     } finally {
       setLoading(false);

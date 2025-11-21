@@ -14,6 +14,12 @@ import {
 } from "@/constants/BottomSheetConfigs";
 import ActionMenuListItem from "./ActionMenuListItem";
 
+export interface Action {
+  label: string;
+  icon: any;
+  onPress: () => void;
+}
+
 interface ActionMenuBottomSheetProps {
   headerComponent: () => React.ReactNode;
   actions: Action[];

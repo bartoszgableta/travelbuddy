@@ -103,7 +103,7 @@ const SettingsView = () => {
   const logout = async () => {
     try {
       await signOut!();
-      router.navigate("/");
+      router.navigate("/sign-in");
     } catch (error) {
       console.error("Error while logging out", error);
     }

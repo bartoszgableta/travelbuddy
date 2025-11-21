@@ -56,7 +56,9 @@ import {
 import ActionTextButtons from "@/components/ActionTextButtons";
 import CustomModal from "@/components/CustomModal";
 import { useDeleteTripPoint } from "@/composables/useTripPoint";
-import ActionMenuBottomSheet from "@/components/ActionMenu/ActionMenuBottomSheet";
+import ActionMenuBottomSheet, {
+  Action,
+} from "@/components/ActionMenu/ActionMenuBottomSheet";
 import useTripNotificationManager from "@/hooks/useTripNotificationManager";
 import {
   cancelNotification,
@@ -66,6 +68,7 @@ import NotificationFormBottomSheet from "@/components/NotificationFormBottomShee
 import { addEventToMainCalendar } from "@/utils/calendar";
 import { API_REJECT_REVIEW } from "@/constants/Endpoints";
 import { useShouldRefresh } from "@/context/ShouldRefreshContext";
+import { useTripDetails } from "@/composables/useTripDetails";
 
 const { width } = Dimensions.get("window");
 
@@ -106,6 +109,8 @@ const TripDayView = () => {
   const [selectedTripPoint, setSelectedTripPoint] =
     useState<TripPointCompact | null>(null);
 
+  const { tripDetails } = useTripDetails(trip_id as string);
+
   const {
     transferPoints,
     tripPoints,
@@ -121,6 +126,13 @@ const TripDayView = () => {
     loading: deleteTripPointLoading,
     error: deleteTripPointError,
   } = useDeleteTripPoint();
+
+  const canShowRecommendations = useMemo(() => {
+    if (tripDetails?.categoryProfileId && tripDetails.conditionProfileId) {
+      return true;
+    }
+    return false;
+  }, [tripDetails]);
 
   const selectedTripPointDate =
     selectedTripPoint && tripDay
@@ -212,20 +224,26 @@ const TripDayView = () => {
           setIsVisible(VisibilityState.None);
         },
       },
-      {
-        icon: RECOMMENDATION_ICON,
-        label: "Rekomendacje",
-        onPress: () => {
-          router.navigate({
-            // @ts-ignore
-            pathname: `/trips/details/${trip_id}/day/${day_id}/recommendations`,
-            params: {
-              date: new Date(tripDay?.date as string).toLocaleDateString(),
+      ...(canShowRecommendations
+        ? [
+            {
+              icon: RECOMMENDATION_ICON,
+              label: "Rekomendacje",
+              onPress: () => {
+                router.navigate({
+                  // @ts-ignore
+                  pathname: `/trips/details/${trip_id}/day/${day_id}/recommendations`,
+                  params: {
+                    date: new Date(
+                      tripDay?.date as string,
+                    ).toLocaleDateString(),
+                  },
+                });
+                setIsVisible(VisibilityState.None);
+              },
             },
-          });
-          setIsVisible(VisibilityState.None);
-        },
-      },
+          ]
+        : []),
     ],
     [setIsVisible, tripDay, trip_id, day_id],
   );
@@ -833,7 +851,9 @@ const TripDayView = () => {
           options={
             isVisible === VisibilityState.TripPoint
               ? options
-              : transferPointOptions
+              : isVisible === VisibilityState.Transfer
+                ? transferPointOptions
+                : []
           }
           isVisible={
             isVisible === VisibilityState.TripPoint ||
