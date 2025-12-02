@@ -95,6 +95,11 @@ const CreatingProfileBottonSheet: React.FC<BottomSheetComponentProps> = ({
     }
   };
 
+  const handleChangeText = (text: string) => {
+    setProfileName(text);
+    if (error) setError("");
+  };
+
   const handleSave = useCallback(
     async (name: string) => {
       await handleCreateProfile(
@@ -153,7 +158,7 @@ const CreatingProfileBottonSheet: React.FC<BottomSheetComponentProps> = ({
               mode="outlined"
               label="Nazwa profilu"
               value={profileName}
-              onChangeText={setProfileName}
+              onChangeText={handleChangeText}
               error={!!error}
             />
             {!!error && <Text style={styles.textError}>{error}</Text>}

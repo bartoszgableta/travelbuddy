@@ -266,6 +266,8 @@ const TripBrowseView = () => {
           onChangeText={setSearchQuery}
           placeholder="Wyszukaj wycieczkę"
           style={styles.searchbar}
+          traileringRippleColor="transparent"
+          rippleColor="transparent"
         />
         <FlatList
           ref={flatListRef}

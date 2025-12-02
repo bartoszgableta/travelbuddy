@@ -53,6 +53,7 @@ const ClickableInput: React.FC<ClickableInputProps> = ({
         value={value}
         editable={false}
         error={error || false}
+        onPress={disabled ? undefined : onPress}
         left={
           left
             ? React.cloneElement(left as React.ReactElement, {
@@ -60,7 +61,12 @@ const ClickableInput: React.FC<ClickableInputProps> = ({
               })
             : icon
               ? React.cloneElement(
-                  <TextInput.Icon icon={icon} onPress={onPress} />,
+                  <TextInput.Icon
+                    icon={icon}
+                    onPress={onPress}
+                    rippleColor={"transparent"}
+                    style={{ backgroundColor: "transparent" }}
+                  />,
                 )
               : undefined
         }

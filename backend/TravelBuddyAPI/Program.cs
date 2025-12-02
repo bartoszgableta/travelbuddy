@@ -123,6 +123,7 @@ namespace TravelBuddyAPI
                    RequireExpirationTime = true,
                    ValidateIssuerSigningKey = true
                };
+               options.RequireHttpsMetadata = false;
            });
 
             builder.Services.AddAuthorization();

@@ -22,6 +22,7 @@ import { ShouldRefreshProvider } from "@/context/ShouldRefreshContext";
 import Notification from "@/utils/notifications";
 import Calendar from "@/utils/calendar";
 import { pl, registerTranslation } from "react-native-paper-dates";
+import TouchRippleOverlay from "@/components/TouchRippleOverlay";
 
 registerTranslation("pl", pl);
 
@@ -72,15 +73,17 @@ function RootLayout() {
             <TripImageContextProvider>
               <ShouldRefreshProvider>
                 <Portal.Host>
-                  <StatusBar
-                    backgroundColor={appTheme.colors.surface}
-                    barStyle={
-                      theme === "dark" ? "light-content" : "dark-content"
-                    }
-                  />
-                  <View style={styles.container}>
-                    <Slot />
-                  </View>
+                  <TouchRippleOverlay>
+                    <StatusBar
+                      backgroundColor={appTheme.colors.surface}
+                      barStyle={
+                        theme === "dark" ? "light-content" : "dark-content"
+                      }
+                    />
+                    <View style={styles.container}>
+                      <Slot />
+                    </View>
+                  </TouchRippleOverlay>
                 </Portal.Host>
               </ShouldRefreshProvider>
             </TripImageContextProvider>
