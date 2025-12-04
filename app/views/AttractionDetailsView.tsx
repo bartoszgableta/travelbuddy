@@ -121,7 +121,7 @@ const AttractionDetailsView = () => {
       const tripDayId = dateToIdMap.get(formattedDate);
       if (tripDetails?.id && tripDayId) {
         setIsDaySelectorVisible(false);
-        router.navigate({
+        router.dismissTo({
           // @ts-ignore
           pathname: `/explore/create`,
           params: {
@@ -173,7 +173,7 @@ const AttractionDetailsView = () => {
 
   const onAddButtonPress = () => {
     if (trip_id && day_id && date && place_id) {
-      router.navigate({
+      router.dismissTo({
         // @ts-ignore
         pathname: `/trips/details/${trip_id}/day/${day_id}/tripPoints/create`,
         params: {

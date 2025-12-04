@@ -32,7 +32,7 @@ const CurrencyValueInput = ({
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const [displayBudget, setDisplayBudget] = useState(
-    budget ? budget.toFixed(2) : "0.00",
+    budget ? budget.toFixed(2) : "",
   );
 
   const handleChange = (value: string) => {
@@ -40,6 +40,11 @@ const CurrencyValueInput = ({
   };
 
   const handleEndEditing = () => {
+    if (displayBudget === "") {
+      handleBudgetChange(0);
+      setDisplayBudget("");
+      return;
+    }
     const numericValue = formatMoneyToNumber(displayBudget);
     handleBudgetChange(parseFloat(numericValue.toFixed(2)));
     setDisplayBudget(formatMoneyToString(numericValue));
@@ -56,9 +61,10 @@ const CurrencyValueInput = ({
         style={styles.budgetInput}
         label={label}
         value={displayBudget}
+        placeholder="0.00"
         onChangeText={handleChange}
         onEndEditing={handleEndEditing}
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
         error={error ?? false}
       />
 

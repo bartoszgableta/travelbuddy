@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextStyle,
   ViewStyle,
+  StyleProp,
 } from "react-native";
 import { TextInput, useTheme, MD3Theme } from "react-native-paper";
 
@@ -13,8 +14,8 @@ interface ClickableInputProps {
   value: string;
   icon?: string;
   onPress: () => void;
-  touchableStyle?: ViewStyle;
-  inputStyle?: TextStyle;
+  touchableStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
   left?: ReactNode;
   right?: ReactNode;
   error?: boolean;

@@ -5,6 +5,8 @@ import {
   Dimensions,
   Modal,
   TouchableOpacity,
+  ViewStyle,
+  TextStyle,
 } from "react-native";
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -20,6 +22,8 @@ interface TimePickerProps {
   onDateChange: (date: Date) => void;
   label?: string;
   error?: boolean;
+  style?: ViewStyle;
+  inputStyle?: TextStyle;
 }
 
 const { width } = Dimensions.get("window");
@@ -31,6 +35,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
   onDateChange,
   label,
   error,
+  style,
+  inputStyle,
 }) => {
   const [timeString, setTimeString] = useState<string>(formatTime(date));
 
@@ -48,8 +54,8 @@ const TimePicker: React.FC<TimePickerProps> = ({
         value={timeString}
         label={label || "Godzina"}
         onPress={() => setShowPicker(true)}
-        touchableStyle={styles.touchable}
-        inputStyle={styles.input}
+        touchableStyle={[styles.touchable, style]}
+        inputStyle={[styles.input, inputStyle]}
         error={error || false}
       />
 
