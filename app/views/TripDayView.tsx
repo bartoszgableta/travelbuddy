@@ -69,6 +69,7 @@ import { addEventToMainCalendar } from "@/utils/calendar";
 import { API_REJECT_REVIEW } from "@/constants/Endpoints";
 import { useShouldRefresh } from "@/context/ShouldRefreshContext";
 import { useTripDetails } from "@/composables/useTripDetails";
+import useAppSettings from "@/hooks/useAppSettings";
 
 const { width } = Dimensions.get("window");
 
@@ -95,6 +96,7 @@ const TripDayView = () => {
   const { api } = useAuth();
   const { trip_id, day_id, refresh } = params;
   const { showSnackbar } = useSnackbar();
+  const { uxVariant } = useAppSettings();
 
   const { refreshScreens, removeRefreshScreen } = useShouldRefresh();
 
@@ -845,7 +847,19 @@ const TripDayView = () => {
           style={styles.fab}
           color={theme.colors.onPrimary}
           label="Dodaj"
-          onPress={() => setIsVisible(VisibilityState.TripPoint)}
+          onPress={() => {
+            if (uxVariant === "default") {
+              setIsVisible(VisibilityState.TripPoint);
+            } else {
+              router.push({
+                // @ts-ignore
+                pathname: `/trips/details/${trip_id}/day/${day_id}/tripPoints/create`,
+                params: {
+                  date: new Date(tripDay?.date as string).toLocaleDateString(),
+                },
+              });
+            }
+          }}
         />
         <CreatingTripPointSelector
           options={

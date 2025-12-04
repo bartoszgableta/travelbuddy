@@ -5,12 +5,15 @@ import { useColorScheme } from "react-native";
 export type Theme = "light" | "dark";
 export type Contrast = "normal" | "high";
 export type FontSize = "small" | "medium" | "large";
+export type UXVariant = "default" | "a" | "b";
 
 interface AppSettingsContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
   contrast: Contrast;
   setContrast: (contrast: Contrast) => void;
+  uxVariant: UXVariant;
+  setUXVariant: (uxVariant: UXVariant) => void;
   fontSize: FontSize;
   setFontSize: (fontSize: FontSize) => void;
 }
@@ -32,6 +35,7 @@ const AppSettingsProvider: React.FC<AppSettingsProviderProps> = ({
   const [theme, setTheme] = useState<Theme>(systemTheme || "light");
   const [contrast, setContrast] = useState<Contrast>("normal");
   const [fontSize, setFontSize] = useState<FontSize>("medium");
+  const [uxVariant, setUXVariant] = useState<UXVariant>("default");
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -59,7 +63,16 @@ const AppSettingsProvider: React.FC<AppSettingsProviderProps> = ({
 
   return (
     <AppSettingsContext.Provider
-      value={{ theme, setTheme, contrast, setContrast, fontSize, setFontSize }}
+      value={{
+        theme,
+        setTheme,
+        contrast,
+        setContrast,
+        fontSize,
+        setFontSize,
+        uxVariant,
+        setUXVariant,
+      }}
     >
       {children}
     </AppSettingsContext.Provider>

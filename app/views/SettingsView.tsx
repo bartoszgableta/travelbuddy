@@ -18,9 +18,9 @@ import { router } from "expo-router";
 import CustomModal from "@/components/CustomModal";
 import ActionTextButtons from "@/components/ActionTextButtons";
 import useAppSettings from "@/hooks/useAppSettings";
-import { FontSize, Theme } from "@/context/AppSettingsContext";
+import { FontSize, Theme, UXVariant } from "@/context/AppSettingsContext";
 
-type ModalOption = "FONT" | "CONTRAST" | "THEME";
+type ModalOption = "FONT" | "CONTRAST" | "THEME" | "VARIANT";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -28,6 +28,8 @@ const SettingsView = () => {
   const {
     theme: selectedTheme,
     setTheme,
+    uxVariant: selectedUXVariant,
+    setUXVariant,
     contrast: selectedContrast,
     setContrast,
     fontSize: selectedFontSize,
@@ -68,6 +70,11 @@ const SettingsView = () => {
   };
 
   const themeItems: Record<string, string> = { light: "jasny", dark: "ciemny" };
+  const uxVariants: Record<UXVariant, string> = {
+    default: "Domyślny",
+    a: "A",
+    b: "B",
+  };
 
   const openBottomSheet = (
     title: string,
@@ -90,6 +97,8 @@ const SettingsView = () => {
       case "THEME":
         setTheme(option as Theme);
         break;
+      case "VARIANT":
+        setUXVariant(option as UXVariant);
       default:
         break;
     }
@@ -143,6 +152,22 @@ const SettingsView = () => {
             }}
           />
 
+          <SettingListItem
+            title="Wariant"
+            rightComponent={() => (
+              <Text style={styles.rightText}>
+                {uxVariants[selectedUXVariant]}
+              </Text>
+            )}
+            onPress={() =>
+              openBottomSheet(
+                "Wybierz wariant",
+                uxVariants,
+                "VARIANT",
+                selectedUXVariant,
+              )
+            }
+          />
           <Title style={styles.title}>Profile</Title>
           <SettingListItem
             title="Profile preferencji"
