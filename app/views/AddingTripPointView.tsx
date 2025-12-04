@@ -270,7 +270,7 @@ const AddingTripPointView = () => {
       showSnackbar("Punkt wycieczki zapisany!");
       if (attractionProviderId) {
         addRefreshScreen("trip-day");
-        router.navigate(`/trips/details/${trip_id}/day/${day_id}`);
+        router.dismissTo(`/trips/details/${trip_id}/day/${day_id}`);
       }
     } catch (err: any) {
       console.log(JSON.stringify(err));
