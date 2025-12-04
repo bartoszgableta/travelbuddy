@@ -91,7 +91,7 @@ export default function ForgotPasswordConfirm() {
         confirmationCode,
         newPassword,
       });
-      router.navigate("/forgot-password/success");
+      router.replace("/forgot-password/success");
     } catch (error: any) {
       const errorMessage =
         confirmPasswordErrors[error.code] || "Wystąpił błąd, spróbuj ponownie";
@@ -144,7 +144,7 @@ export default function ForgotPasswordConfirm() {
             </Animated.View>
             <Text style={styles.signIn} variant="bodyLarge">
               Wróć do{" "}
-              <Link href="/sign-in" style={styles.textBold}>
+              <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
                 Logowania
               </Link>
             </Text>

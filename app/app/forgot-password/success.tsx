@@ -15,7 +15,7 @@ export default function Success() {
   const styles = makeStyles(theme);
 
   const handlePress = () => {
-    router.navigate("/sign-in");
+    router.dismissTo("/sign-in");
   };
 
   return (

@@ -115,22 +115,6 @@ const SettingsView = () => {
     <GestureHandlerRootView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.content}>
-          {/* <SettingListItem
-            title="Czcionka"
-            rightComponent={() => (
-              <Text style={styles.rightText}>
-                {fontItems[selectedFontSize]}
-              </Text>
-            )}
-            onPress={() =>
-              openBottomSheet(
-                "Wybierz czcionkę",
-                fontItems,
-                "FONT",
-                selectedFontSize,
-              )
-            }
-          /> */}
           <SettingListItem
             title="Motyw"
             rightComponent={() => (
@@ -159,30 +143,7 @@ const SettingsView = () => {
             }}
           />
 
-          {/* <Title style={styles.title}>Moje Statystyki</Title>
-          <SettingListItem
-            title="Oceny atrakcji"
-            rightComponent={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              console.log("Oceny atrakcji kliknięte");
-            }}
-          />
-          <SettingListItem
-            title="Wydatki"
-            rightComponent={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              console.log("Wydatki kliknięte");
-            }}
-          />
-          <SettingListItem
-            title="Statystyki wycieczek"
-            rightComponent={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              console.log("Statystyki wycieczek kliknięte");
-            }}
-          /> */}
-
-          <Title style={styles.title}>Preferencje i statystyki</Title>
+          <Title style={styles.title}>Profile</Title>
           <SettingListItem
             title="Profile preferencji"
             rightComponent={() => <List.Icon icon="chevron-right" />}

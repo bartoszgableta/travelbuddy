@@ -168,7 +168,7 @@ export default function SignUp() {
             </Animated.View>
             <Text style={styles.signIn} variant="bodyLarge">
               Posiadasz już konto?{" "}
-              <Link href="/sign-in" style={styles.textBold}>
+              <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
                 Zaloguj się
               </Link>
             </Text>

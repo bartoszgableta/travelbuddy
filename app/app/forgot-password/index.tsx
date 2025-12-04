@@ -97,7 +97,7 @@ export default function ForgotPasswordEmail() {
           </Animated.View>
           <Text style={styles.signIn} variant="bodyLarge">
             Wróć do{" "}
-            <Link href="/sign-in" style={styles.textBold}>
+            <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
               Logowania
             </Link>
           </Text>
