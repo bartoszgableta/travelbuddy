@@ -124,12 +124,19 @@ const AddingTripView = () => {
     error: favouriteProfilesError,
   } = useGetFavouriteProfiles();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    console.log("setting navigation options");
     navigation.setOptions({
       onBackPress: () => {
         setIsWarningModalVisible(true);
       },
     });
+
+    return () => {
+      navigation.setOptions({
+        onBackPress: undefined,
+      });
+    };
   }, [navigation]);
 
   useEffect(() => {
@@ -170,7 +177,9 @@ const AddingTripView = () => {
       },
     );
 
-    return () => backHandler.remove();
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   const handleDismissWarningModal = () => {
@@ -250,7 +259,7 @@ const AddingTripView = () => {
         await saveImage(id, selectedImage);
       }
       addRefreshScreen("trips");
-      router.navigate("/trips");
+      router.dismissTo("/trips");
       showSnackbar("Zapisano wycieczkę!", "success");
     } catch (error: any) {
       console.error(error.response);

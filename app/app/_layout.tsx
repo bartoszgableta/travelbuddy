@@ -73,17 +73,15 @@ function RootLayout() {
             <TripImageContextProvider>
               <ShouldRefreshProvider>
                 <Portal.Host>
-                  <TouchRippleOverlay>
-                    <StatusBar
-                      backgroundColor={appTheme.colors.surface}
-                      barStyle={
-                        theme === "dark" ? "light-content" : "dark-content"
-                      }
-                    />
-                    <View style={styles.container}>
-                      <Slot />
-                    </View>
-                  </TouchRippleOverlay>
+                  <StatusBar
+                    backgroundColor={appTheme.colors.surface}
+                    barStyle={
+                      theme === "dark" ? "light-content" : "dark-content"
+                    }
+                  />
+                  <View style={styles.container}>
+                    <Slot />
+                  </View>
                 </Portal.Host>
               </ShouldRefreshProvider>
             </TripImageContextProvider>
