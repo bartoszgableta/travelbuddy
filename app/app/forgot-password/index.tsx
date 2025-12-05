@@ -11,10 +11,7 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmailTextInput } from "@/components/auth/EmailTextInput";
 import { validateEmail } from "@/utils/validations";
 import { MD3ThemeExtended } from "@/constants/Themes";
@@ -68,51 +65,45 @@ export default function ForgotPasswordEmail() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.innerContainer}>
-          <Animated.View style={[animatedStyles]}>
-            <Text style={styles.headline} variant="headlineMedium">
-              Nie pamiętam hasła
-            </Text>
-            <Text style={styles.description} variant="bodyLarge">
-              Wprowadź adres email, który został użyty przy rejestracji.
-            </Text>
-            <EmailTextInput
-              value={email}
-              onChangeText={handleEmailChange}
-              error={!!error}
-              style={styles.inputText}
-            />
-            <Text style={styles.textError}>{error || " "}</Text>
-            <Button
-              style={styles.button}
-              labelStyle={styles.buttonLabel}
-              mode="contained"
-              onPress={handlePress}
-              contentStyle={styles.buttonContent}
-            >
-              Kontynuuj
-            </Button>
-          </Animated.View>
-          <Text style={styles.signIn} variant="bodyLarge">
-            Wróć do{" "}
-            <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
-              Logowania
-            </Link>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.innerContainer}>
+        <Animated.View style={[animatedStyles]}>
+          <Text style={styles.headline} variant="headlineMedium">
+            Nie pamiętam hasła
           </Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+          <Text style={styles.description} variant="bodyLarge">
+            Wprowadź adres email, który został użyty przy rejestracji.
+          </Text>
+          <EmailTextInput
+            value={email}
+            onChangeText={handleEmailChange}
+            error={!!error}
+            style={styles.inputText}
+          />
+          <Text style={styles.textError}>{error || " "}</Text>
+          <Button
+            style={styles.button}
+            labelStyle={styles.buttonLabel}
+            mode="contained"
+            onPress={handlePress}
+            contentStyle={styles.buttonContent}
+          >
+            Kontynuuj
+          </Button>
+        </Animated.View>
+        <Text style={styles.signIn} variant="bodyLarge">
+          Wróć do{" "}
+          <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
+            Logowania
+          </Link>
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const makeStyles = (theme: MD3ThemeExtended) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.surface,
-    },
     innerContainer: {
       flex: 1,
       justifyContent: "flex-end",

@@ -7,7 +7,6 @@ import {
 import { router } from "expo-router";
 import { useTheme, Text, Button } from "react-native-paper";
 import { MD3ThemeExtended } from "@/constants/Themes";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Success() {
   const theme = useTheme() as MD3ThemeExtended;
@@ -19,36 +18,30 @@ export default function Success() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.innerContainer}>
-          <Text style={styles.headline} variant="headlineLarge">
-            Udało się!
-          </Text>
-          <Text variant="bodyLarge" style={styles.paragraph}>
-            Zmieniono hasło.
-          </Text>
-          <Button
-            style={styles.button}
-            labelStyle={styles.buttonLabel}
-            mode="contained"
-            onPress={handlePress}
-            contentStyle={styles.buttonContent}
-          >
-            Wróć do logowania
-          </Button>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.innerContainer}>
+        <Text style={styles.headline} variant="headlineLarge">
+          Udało się!
+        </Text>
+        <Text variant="bodyLarge" style={styles.paragraph}>
+          Zmieniono hasło.
+        </Text>
+        <Button
+          style={styles.button}
+          labelStyle={styles.buttonLabel}
+          mode="contained"
+          onPress={handlePress}
+          contentStyle={styles.buttonContent}
+        >
+          Wróć do logowania
+        </Button>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const makeStyles = (theme: MD3ThemeExtended) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.surface,
-    },
     innerContainer: {
       flex: 1,
       justifyContent: "flex-end",

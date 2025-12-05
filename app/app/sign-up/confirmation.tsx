@@ -11,10 +11,7 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CodeTextInput } from "@/components/auth/CodeTextInput";
 import { MD3ThemeExtended } from "@/constants/Themes";
 import { validateCode } from "@/utils/validations";
@@ -80,35 +77,31 @@ export default function Confirmation() {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.innerContainer}>
-            <Animated.View style={[animatedStyles]}>
-              <Text style={styles.headline} variant="headlineLarge">
-                Potwierdź założenie konta
-              </Text>
-              <CodeTextInput
-                value={confirmationCode}
-                onChangeText={handleInputChange}
-                style={styles.inputText}
-                error={!!confirmationCodeError}
-              />
-              <Text style={styles.textError}>
-                {confirmationCodeError || " "}
-              </Text>
-              <Button
-                style={styles.button}
-                labelStyle={styles.buttonLabel}
-                mode="contained"
-                onPress={confirm}
-                contentStyle={styles.buttonContent}
-              >
-                Potwierdź
-              </Button>
-            </Animated.View>
-          </View>
-        </TouchableWithoutFeedback>
-      </SafeAreaView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <Animated.View style={[animatedStyles]}>
+            <Text style={styles.headline} variant="headlineLarge">
+              Potwierdź założenie konta
+            </Text>
+            <CodeTextInput
+              value={confirmationCode}
+              onChangeText={handleInputChange}
+              style={styles.inputText}
+              error={!!confirmationCodeError}
+            />
+            <Text style={styles.textError}>{confirmationCodeError || " "}</Text>
+            <Button
+              style={styles.button}
+              labelStyle={styles.buttonLabel}
+              mode="contained"
+              onPress={confirm}
+              contentStyle={styles.buttonContent}
+            >
+              Potwierdź
+            </Button>
+          </Animated.View>
+        </View>
+      </TouchableWithoutFeedback>
       <LoadingView show={isLoading} />
     </>
   );
@@ -116,10 +109,6 @@ export default function Confirmation() {
 
 const makeStyles = (theme: MD3ThemeExtended) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.surface,
-    },
     innerContainer: {
       flex: 1,
       justifyContent: "flex-end",

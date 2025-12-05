@@ -13,10 +13,7 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmailTextInput } from "@/components/auth/EmailTextInput";
 import { PasswordTextInput } from "@/components/auth/PasswordTextInput";
 import { validateEmail, validatePassword } from "@/utils/validations";
@@ -98,50 +95,48 @@ export default function SignIn() {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.innerContainer}>
-            <Animated.View style={[animatedStyles]}>
-              <Text style={styles.headline} variant="headlineLarge">
-                Logowanie
-              </Text>
-              <EmailTextInput
-                value={credentials.email}
-                onChangeText={handleEmailChange}
-                error={!!errors.email}
-                style={styles.inputText}
-              />
-              <Text style={styles.textError}>{errors.email || " "}</Text>
-              <View style={{ height: 10 }} />
-              <PasswordTextInput
-                value={credentials.password}
-                onChangeText={handlePasswordChange}
-                error={!!errors.password}
-                style={styles.inputText}
-              />
-              <Text style={styles.textError}>{errors.password || " "}</Text>
-              <Text style={styles.forgotPassword} variant="labelLarge">
-                <Link href="/forgot-password">Nie pamiętam hasła</Link>
-              </Text>
-              <Button
-                style={styles.button}
-                labelStyle={styles.buttonLabel}
-                mode="contained"
-                onPress={login}
-                contentStyle={styles.buttonContent}
-              >
-                Zaloguj
-              </Button>
-            </Animated.View>
-            <Text style={styles.signUp} variant="bodyLarge">
-              Nie posiadasz konta?{" "}
-              <Link href="/sign-up" style={styles.textBold}>
-                Zarejestruj się
-              </Link>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <Animated.View style={[animatedStyles]}>
+            <Text style={styles.headline} variant="headlineLarge">
+              Logowanie
             </Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </SafeAreaView>
+            <EmailTextInput
+              value={credentials.email}
+              onChangeText={handleEmailChange}
+              error={!!errors.email}
+              style={styles.inputText}
+            />
+            <Text style={styles.textError}>{errors.email || " "}</Text>
+            <View style={{ height: 10 }} />
+            <PasswordTextInput
+              value={credentials.password}
+              onChangeText={handlePasswordChange}
+              error={!!errors.password}
+              style={styles.inputText}
+            />
+            <Text style={styles.textError}>{errors.password || " "}</Text>
+            <Text style={styles.forgotPassword} variant="labelLarge">
+              <Link href="/forgot-password">Nie pamiętam hasła</Link>
+            </Text>
+            <Button
+              style={styles.button}
+              labelStyle={styles.buttonLabel}
+              mode="contained"
+              onPress={login}
+              contentStyle={styles.buttonContent}
+            >
+              Zaloguj
+            </Button>
+          </Animated.View>
+          <Text style={styles.signUp} variant="bodyLarge">
+            Nie posiadasz konta?{" "}
+            <Link href="/sign-up" style={styles.textBold}>
+              Zarejestruj się
+            </Link>
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
       <LoadingView show={isLoading} />
     </>
   );

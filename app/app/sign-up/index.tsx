@@ -12,10 +12,7 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmailTextInput } from "@/components/auth/EmailTextInput";
 import { PasswordTextInput } from "@/components/auth/PasswordTextInput";
 import {
@@ -134,80 +131,78 @@ export default function SignUp() {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.innerContainer}>
-            <Animated.View style={[animatedStyles]}>
-              <Text style={styles.headline} variant="headlineLarge">
-                Rejestracja
-              </Text>
-              <EmailTextInput
-                value={credentials.email}
-                onChangeText={handleEmailChange}
-                error={!!errors.email}
-                style={styles.inputText}
-              />
-              <Text style={styles.textError}>{errors.email || " "}</Text>
-              <View style={{ height: 10 }} />
-              <PasswordTextInput
-                value={credentials.password}
-                onChangeText={handlePasswordChange}
-                error={!!errors.password}
-                style={styles.inputText}
-              />
-              <Text style={styles.textError}>{errors.password || " "}</Text>
-              <Button
-                style={styles.button}
-                labelStyle={styles.buttonLabel}
-                mode="contained"
-                onPress={signup}
-                contentStyle={styles.buttonContent}
-              >
-                Zarejestruj
-              </Button>
-            </Animated.View>
-            <Text style={styles.signIn} variant="bodyLarge">
-              Posiadasz już konto?{" "}
-              <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
-                Zaloguj się
-              </Link>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <Animated.View style={[animatedStyles]}>
+            <Text style={styles.headline} variant="headlineLarge">
+              Rejestracja
             </Text>
-            <Portal>
-              <Dialog visible={showDialog} onDismiss={handleDismissDialog}>
-                <Dialog.Icon icon={CHECK_CIRCLE_ICON} />
-                <Dialog.Title style={styles.dialogTitle}>
-                  Dziękujemy za rejestrację
-                </Dialog.Title>
-                <Dialog.Content>
-                  <Text variant="bodyLarge" style={styles.dialogContent}>
-                    Wysłaliśmy wiadomość z kodem potwierdzającym założenie konta
-                  </Text>
-                </Dialog.Content>
-                <Dialog.Actions>
-                  <Button onPress={handleDismissDialog}>Dalej</Button>
-                </Dialog.Actions>
-              </Dialog>
-              <Dialog
-                visible={showDialogUserExists}
-                onDismiss={handleDismissDialogUserExists}
-              >
-                <Dialog.Icon icon={CHECK_CIRCLE_ICON} />
-                <Dialog.Title style={styles.dialogTitle}>
-                  Użytkownik już istnieje
-                </Dialog.Title>
-                <Dialog.Content>
-                  <Text variant="bodyLarge" style={styles.dialogContent}>
-                    Wysłaliśmy wiadomość z kodem potwierdzającym założenie konta
-                  </Text>
-                </Dialog.Content>
-                <Dialog.Actions>
-                  <Button onPress={handleDismissDialogUserExists}>Dalej</Button>
-                </Dialog.Actions>
-              </Dialog>
-            </Portal>
-          </View>
-        </TouchableWithoutFeedback>
-      </SafeAreaView>
+            <EmailTextInput
+              value={credentials.email}
+              onChangeText={handleEmailChange}
+              error={!!errors.email}
+              style={styles.inputText}
+            />
+            <Text style={styles.textError}>{errors.email || " "}</Text>
+            <View style={{ height: 10 }} />
+            <PasswordTextInput
+              value={credentials.password}
+              onChangeText={handlePasswordChange}
+              error={!!errors.password}
+              style={styles.inputText}
+            />
+            <Text style={styles.textError}>{errors.password || " "}</Text>
+            <Button
+              style={styles.button}
+              labelStyle={styles.buttonLabel}
+              mode="contained"
+              onPress={signup}
+              contentStyle={styles.buttonContent}
+            >
+              Zarejestruj
+            </Button>
+          </Animated.View>
+          <Text style={styles.signIn} variant="bodyLarge">
+            Posiadasz już konto?{" "}
+            <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
+              Zaloguj się
+            </Link>
+          </Text>
+          <Portal>
+            <Dialog visible={showDialog} onDismiss={handleDismissDialog}>
+              <Dialog.Icon icon={CHECK_CIRCLE_ICON} />
+              <Dialog.Title style={styles.dialogTitle}>
+                Dziękujemy za rejestrację
+              </Dialog.Title>
+              <Dialog.Content>
+                <Text variant="bodyLarge" style={styles.dialogContent}>
+                  Wysłaliśmy wiadomość z kodem potwierdzającym założenie konta
+                </Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={handleDismissDialog}>Dalej</Button>
+              </Dialog.Actions>
+            </Dialog>
+            <Dialog
+              visible={showDialogUserExists}
+              onDismiss={handleDismissDialogUserExists}
+            >
+              <Dialog.Icon icon={CHECK_CIRCLE_ICON} />
+              <Dialog.Title style={styles.dialogTitle}>
+                Użytkownik już istnieje
+              </Dialog.Title>
+              <Dialog.Content>
+                <Text variant="bodyLarge" style={styles.dialogContent}>
+                  Wysłaliśmy wiadomość z kodem potwierdzającym założenie konta
+                </Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={handleDismissDialogUserExists}>Dalej</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        </View>
+      </TouchableWithoutFeedback>
       <LoadingView show={isLoading} />
     </>
   );

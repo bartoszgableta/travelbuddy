@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import { PaperProvider, Portal } from "react-native-paper";
+import { Portal, ThemeProvider } from "react-native-paper";
 import { Themes, MD3ThemeExtended } from "@/constants/Themes";
 import {
   Manrope_400Regular,
@@ -22,7 +22,6 @@ import { ShouldRefreshProvider } from "@/context/ShouldRefreshContext";
 import Notification from "@/utils/notifications";
 import Calendar from "@/utils/calendar";
 import { pl, registerTranslation } from "react-native-paper-dates";
-import TouchRippleOverlay from "@/components/TouchRippleOverlay";
 
 registerTranslation("pl", pl);
 
@@ -66,29 +65,25 @@ function RootLayout() {
   const styles = makeStyles(appTheme);
 
   return (
-    <PaperProvider theme={appTheme}>
-      <NavigationDataProvider>
-        <SnackbarProvider>
-          <NotificationDataProvider>
-            <TripImageContextProvider>
-              <ShouldRefreshProvider>
-                <Portal.Host>
-                  <StatusBar
-                    backgroundColor={appTheme.colors.surface}
-                    barStyle={
-                      theme === "dark" ? "light-content" : "dark-content"
-                    }
-                  />
-                  <View style={styles.container}>
-                    <Slot />
-                  </View>
-                </Portal.Host>
-              </ShouldRefreshProvider>
-            </TripImageContextProvider>
-          </NotificationDataProvider>
-        </SnackbarProvider>
-      </NavigationDataProvider>
-    </PaperProvider>
+    <View style={styles.appContainer}>
+      <ThemeProvider theme={appTheme}>
+        <NavigationDataProvider>
+          <SnackbarProvider>
+            <NotificationDataProvider>
+              <TripImageContextProvider>
+                <ShouldRefreshProvider>
+                  <Portal.Host>
+                    <View style={styles.container}>
+                      <Slot />
+                    </View>
+                  </Portal.Host>
+                </ShouldRefreshProvider>
+              </TripImageContextProvider>
+            </NotificationDataProvider>
+          </SnackbarProvider>
+        </NavigationDataProvider>
+      </ThemeProvider>
+    </View>
   );
 }
 
@@ -106,9 +101,13 @@ export default () => {
 
 const makeStyles = (theme: MD3ThemeExtended) =>
   StyleSheet.create({
-    container: {
+    appContainer: {
       flex: 1,
       backgroundColor: theme.colors.surface,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: "transparent",
     },
     statusBar: {
       backgroundColor: theme.colors.surface,

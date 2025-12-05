@@ -32,7 +32,6 @@ type TripViewMode = "actual" | "archive";
 
 const TripBrowseView = () => {
   const { api } = useAuth();
-
   const flatListRef = useRef<FlatList>(null);
 
   useAnimatedKeyboard();

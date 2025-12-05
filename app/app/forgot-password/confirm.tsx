@@ -12,10 +12,7 @@ import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PasswordTextInput } from "@/components/auth/PasswordTextInput";
 import { CodeTextInput } from "@/components/auth/CodeTextInput";
 import {
@@ -103,54 +100,50 @@ export default function ForgotPasswordConfirm() {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.innerContainer}>
-            <Animated.View style={[animatedStyles]}>
-              <Text style={styles.headline} variant="headlineLarge">
-                Utwórz nowe hasło
-              </Text>
-              <Text style={styles.description} variant="bodyLarge">
-                Jeśli posiadasz konto, otrzymasz kod weryfikacyjny na adres
-                email. Wprowadź go wraz z nowym hasłem.
-              </Text>
-              <CodeTextInput
-                value={confirmationCode}
-                style={styles.inputText}
-                error={!!confirmationCodeError}
-                onChangeText={handleCodeInputChange}
-              />
-              <Text style={styles.textError}>
-                {confirmationCodeError || " "}
-              </Text>
-              <View style={{ height: 10 }} />
-              <PasswordTextInput
-                value={newPassword}
-                onChangeText={handleNewPasswordInputChange}
-                error={!!newPasswordError}
-                style={styles.inputText}
-                placeholder="Nowe hasło"
-              />
-              <Text style={styles.textError}>{newPasswordError || " "}</Text>
-              <Button
-                style={styles.button}
-                labelStyle={styles.buttonLabel}
-                mode="contained"
-                onPress={resetPassword}
-                contentStyle={styles.buttonContent}
-              >
-                Zmień hasło
-              </Button>
-            </Animated.View>
-            <Text style={styles.signIn} variant="bodyLarge">
-              Wróć do{" "}
-              <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
-                Logowania
-              </Link>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+          <Animated.View style={[animatedStyles]}>
+            <Text style={styles.headline} variant="headlineLarge">
+              Utwórz nowe hasło
             </Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </SafeAreaView>
+            <Text style={styles.description} variant="bodyLarge">
+              Jeśli posiadasz konto, otrzymasz kod weryfikacyjny na adres email.
+              Wprowadź go wraz z nowym hasłem.
+            </Text>
+            <CodeTextInput
+              value={confirmationCode}
+              style={styles.inputText}
+              error={!!confirmationCodeError}
+              onChangeText={handleCodeInputChange}
+            />
+            <Text style={styles.textError}>{confirmationCodeError || " "}</Text>
+            <View style={{ height: 10 }} />
+            <PasswordTextInput
+              value={newPassword}
+              onChangeText={handleNewPasswordInputChange}
+              error={!!newPasswordError}
+              style={styles.inputText}
+              placeholder="Nowe hasło"
+            />
+            <Text style={styles.textError}>{newPasswordError || " "}</Text>
+            <Button
+              style={styles.button}
+              labelStyle={styles.buttonLabel}
+              mode="contained"
+              onPress={resetPassword}
+              contentStyle={styles.buttonContent}
+            >
+              Zmień hasło
+            </Button>
+          </Animated.View>
+          <Text style={styles.signIn} variant="bodyLarge">
+            Wróć do{" "}
+            <Link href="/sign-in" dismissTo={true} style={styles.textBold}>
+              Logowania
+            </Link>
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
       <LoadingView show={isLoading} />
     </>
   );
@@ -158,10 +151,6 @@ export default function ForgotPasswordConfirm() {
 
 const makeStyles = (theme: MD3ThemeExtended) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.surface,
-    },
     innerContainer: {
       flex: 1,
       justifyContent: "flex-end",
