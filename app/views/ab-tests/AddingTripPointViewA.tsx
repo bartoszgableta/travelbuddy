@@ -94,7 +94,7 @@ const AddingTripPointViewA = () => {
 
   // --- State for Wizard ---
   const [step, setStep] = useState<number>(0);
-  const TOTAL_STEPS = 4;
+  const TOTAL_STEPS = 6;
 
   // --- Data Fetching ---
   const { tripDetails } = useTripDetails(trip_id as string);
@@ -132,6 +132,13 @@ const AddingTripPointViewA = () => {
   const [expectedCost, setExpectedCost] = useState<number>(0);
   const [costType, setCostType] = useState<string>("perPerson");
   const [comment, setComment] = useState<string>("");
+
+  // --- Address State ---
+  const [country, setCountry] = useState<string>("");
+  const [state, setState] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [street, setStreet] = useState<string>("");
+  const [houseNumber, setHouseNumber] = useState<string>("");
 
   const [isStartTimePickerVisible, setIsStartTimePickerVisible] =
     useState(false);
@@ -187,6 +194,13 @@ const AddingTripPointViewA = () => {
       setTripPointCategory(
         category || getCategoryByName(DEFAULT_CATEGORY_NAME),
       );
+
+      // Populate address fields
+      setCountry(fetchedPlaceDetails.country || "");
+      setState(fetchedPlaceDetails.state || "");
+      setCity(fetchedPlaceDetails.city || "");
+      setStreet(fetchedPlaceDetails.street || "");
+      setHouseNumber(fetchedPlaceDetails.houseNumber || "");
 
       // If we just selected a place, we might want to auto-advance or just fill data
       // If attractionProviderId was passed initially, we might want to skip step 0
@@ -268,6 +282,12 @@ const AddingTripPointViewA = () => {
     setSelectedPlaceId(null);
     setTripPointName("");
     setTripPointCategory(getCategoryByName(DEFAULT_CATEGORY_NAME));
+    // Clear address fields
+    setCountry("");
+    setState("");
+    setCity("");
+    setStreet("");
+    setHouseNumber("");
     setStep(1);
   };
 
@@ -296,22 +316,23 @@ const AddingTripPointViewA = () => {
     setLoadingSubmit(true);
     try {
       const placeToRequest: Place = {
-        name: tripPointName, // Use user entered name or place name
+        name: tripPointName,
         providerId: selectedPlaceId || undefined,
         superCategoryId: tripPointCategory?.id,
-        // If we have details from API, use them, otherwise nulls
-        country: fetchedPlaceDetails?.country || null,
-        state: fetchedPlaceDetails?.state || null,
-        street: fetchedPlaceDetails?.street || null,
-        city: fetchedPlaceDetails?.city || null,
-        houseNumber: fetchedPlaceDetails?.houseNumber || null,
+        // Use state values (either from API or user input)
+        country: country || null,
+        state: state || null,
+        street: street || null,
+        city: city || null,
+        houseNumber: houseNumber || null,
         latitude: fetchedPlaceDetails?.latitude || null,
         longitude: fetchedPlaceDetails?.longitude || null,
       } as Place;
 
       let totalExpectedCost = expectedCost;
-      // Logic from original view for cost calculation could be added here if needed
-      // For now assuming simple cost
+      if (costType === "perPerson" && tripDetails?.numberOfTravelers) {
+        totalExpectedCost = tripDetails.numberOfTravelers * expectedCost;
+      }
 
       const tripPointRequest: TripPointRequest = {
         name: tripPointName,
@@ -440,7 +461,66 @@ const AddingTripPointViewA = () => {
     </ScrollView>
   );
 
-  const renderStep2 = () => (
+  const renderStep2 = () => {
+    const isPlaceSelected = !!selectedPlaceId;
+    return (
+      <ScrollView style={styles.stepContainer}>
+        <Text style={styles.stepTitle}>Adres</Text>
+        {isPlaceSelected && (
+          <Text style={styles.addressNote}>
+            Pola wypełnione automatycznie na podstawie wybranej atrakcji
+          </Text>
+        )}
+
+        <TextInput
+          label="Państwo"
+          value={country}
+          onChangeText={setCountry}
+          mode="outlined"
+          style={styles.input}
+          disabled={isPlaceSelected}
+        />
+
+        <TextInput
+          label="Województwo/Region"
+          value={state}
+          onChangeText={setState}
+          mode="outlined"
+          style={styles.input}
+          disabled={isPlaceSelected}
+        />
+
+        <TextInput
+          label="Miasto"
+          value={city}
+          onChangeText={setCity}
+          mode="outlined"
+          style={styles.input}
+          disabled={isPlaceSelected}
+        />
+
+        <TextInput
+          label="Ulica"
+          value={street}
+          onChangeText={setStreet}
+          mode="outlined"
+          style={styles.input}
+          disabled={isPlaceSelected}
+        />
+
+        <TextInput
+          label="Numer domu"
+          value={houseNumber}
+          onChangeText={setHouseNumber}
+          mode="outlined"
+          style={styles.input}
+          disabled={isPlaceSelected}
+        />
+      </ScrollView>
+    );
+  };
+
+  const renderStep3 = () => (
     <ScrollView style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Koszty</Text>
 
@@ -471,7 +551,7 @@ const AddingTripPointViewA = () => {
     </ScrollView>
   );
 
-  const renderStep3 = () => (
+  const renderStep4 = () => (
     <ScrollView style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Notatki</Text>
 
@@ -487,7 +567,7 @@ const AddingTripPointViewA = () => {
     </ScrollView>
   );
 
-  const renderStep4 = () => (
+  const renderStep5 = () => (
     <ScrollView style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Podsumowanie</Text>
 
@@ -502,6 +582,15 @@ const AddingTripPointViewA = () => {
           {CategoryLabelsForProfiles[tripPointCategory?.name ?? "tourism"]}
         </Text>
       </View>
+
+      {(country || city) && (
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Lokalizacja:</Text>
+          <Text style={styles.summaryValue}>
+            {[street, houseNumber, city, country].filter(Boolean).join(", ")}
+          </Text>
+        </View>
+      )}
 
       <View style={styles.summaryRow}>
         <Text style={styles.summaryLabel}>Czas:</Text>
@@ -539,6 +628,7 @@ const AddingTripPointViewA = () => {
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
         {step === 4 && renderStep4()}
+        {step === 5 && renderStep5()}
       </View>
 
       <View style={styles.navigationButtons}>
@@ -642,6 +732,16 @@ const createStyles = (theme: MD3ThemeExtended) =>
       color: theme.colors.error,
       width: 0.85 * width,
       textAlign: "left",
+      ...theme.fonts.bodySmall,
+    },
+    input: {
+      marginBottom: 12,
+      backgroundColor: theme.colors.surface,
+    },
+    addressNote: {
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 16,
+      fontStyle: "italic",
       ...theme.fonts.bodySmall,
     },
   });

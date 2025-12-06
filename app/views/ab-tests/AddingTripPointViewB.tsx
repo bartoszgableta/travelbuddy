@@ -73,7 +73,7 @@ const convertPlace = (place: PlaceCompact): PlaceViewModel => {
   };
 };
 
-type SectionId = "place" | "basic" | "cost" | "notes";
+type SectionId = "place" | "basic" | "address" | "cost" | "notes";
 
 const AddingTripPointViewB = () => {
   const theme = useTheme();
@@ -129,6 +129,13 @@ const AddingTripPointViewB = () => {
   const [costType, setCostType] = useState<string>("perPerson");
   const [comment, setComment] = useState<string>("");
 
+  // --- Address State ---
+  const [country, setCountry] = useState<string>("");
+  const [state, setState] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [street, setStreet] = useState<string>("");
+  const [houseNumber, setHouseNumber] = useState<string>("");
+
   const [isStartTimePickerVisible, setIsStartTimePickerVisible] =
     useState(false);
   const [isEndTimePickerVisible, setIsEndTimePickerVisible] = useState(false);
@@ -144,6 +151,7 @@ const AddingTripPointViewB = () => {
     return {
       place: !!selectedPlaceId || !!tripPointName.trim(),
       basic: !!tripPointName.trim() && !timeError,
+      address: true, // Address is optional, always "complete"
       cost: true, // Cost is optional, always "complete"
       notes: true, // Notes are optional, always "complete"
     };
@@ -195,6 +203,13 @@ const AddingTripPointViewB = () => {
       setTripPointCategory(
         category || getCategoryByName(DEFAULT_CATEGORY_NAME),
       );
+
+      // Populate address fields from fetched place details
+      setCountry(fetchedPlaceDetails.country || "");
+      setState(fetchedPlaceDetails.state || "");
+      setCity(fetchedPlaceDetails.city || "");
+      setStreet(fetchedPlaceDetails.street || "");
+      setHouseNumber(fetchedPlaceDetails.houseNumber || "");
 
       // Auto-expand basic section after place is selected
       if (!expandedSections.includes("basic")) {
@@ -281,6 +296,12 @@ const AddingTripPointViewB = () => {
     setSelectedPlaceName("");
     setTripPointName("");
     setTripPointCategory(getCategoryByName(DEFAULT_CATEGORY_NAME));
+    // Clear address fields
+    setCountry("");
+    setState("");
+    setCity("");
+    setStreet("");
+    setHouseNumber("");
   };
 
   const handleSubmit = async () => {
@@ -307,11 +328,11 @@ const AddingTripPointViewB = () => {
         name: tripPointName,
         providerId: selectedPlaceId || undefined,
         superCategoryId: tripPointCategory?.id,
-        country: fetchedPlaceDetails?.country || null,
-        state: fetchedPlaceDetails?.state || null,
-        street: fetchedPlaceDetails?.street || null,
-        city: fetchedPlaceDetails?.city || null,
-        houseNumber: fetchedPlaceDetails?.houseNumber || null,
+        country: country || null,
+        state: state || null,
+        street: street || null,
+        city: city || null,
+        houseNumber: houseNumber || null,
         latitude: fetchedPlaceDetails?.latitude || null,
         longitude: fetchedPlaceDetails?.longitude || null,
       } as Place;
@@ -515,6 +536,53 @@ const AddingTripPointViewB = () => {
     </View>
   );
 
+  const renderAddressSection = () => (
+    <View style={styles.sectionContent}>
+      {selectedPlaceId && (
+        <Text variant="bodySmall" style={styles.addressNote}>
+          Adres został pobrany z wybranego miejsca. Możesz go edytować poniżej.
+        </Text>
+      )}
+      <TextInput
+        label="Kraj"
+        value={country}
+        onChangeText={setCountry}
+        mode="outlined"
+        style={styles.input}
+      />
+      <TextInput
+        label="Województwo/Stan"
+        value={state}
+        onChangeText={setState}
+        mode="outlined"
+        style={styles.input}
+      />
+      <TextInput
+        label="Miasto"
+        value={city}
+        onChangeText={setCity}
+        mode="outlined"
+        style={styles.input}
+      />
+      <View style={styles.addressRow}>
+        <TextInput
+          label="Ulica"
+          value={street}
+          onChangeText={setStreet}
+          mode="outlined"
+          style={[styles.input, styles.streetInput]}
+        />
+        <TextInput
+          label="Nr"
+          value={houseNumber}
+          onChangeText={setHouseNumber}
+          mode="outlined"
+          style={[styles.input, styles.houseNumberInput]}
+        />
+      </View>
+    </View>
+  );
+
   const renderCostSection = () => (
     <View style={styles.sectionContent}>
       <CurrencyValueInput
@@ -593,6 +661,27 @@ const AddingTripPointViewB = () => {
             style={styles.accordion}
           >
             <View style={styles.accordionContent}>{renderBasicSection()}</View>
+          </List.Accordion>
+          <Divider />
+
+          {/* Address Section */}
+          <List.Accordion
+            title="Adres"
+            description={
+              city || street
+                ? [[street, houseNumber].filter(Boolean).join(" "), city]
+                    .filter(Boolean)
+                    .join(", ")
+                : "Opcjonalne"
+            }
+            left={(props) => renderSectionIcon("address", "map-marker")}
+            expanded={expandedSections.includes("address")}
+            onPress={() => toggleSection("address")}
+            style={styles.accordion}
+          >
+            <View style={styles.accordionContent}>
+              {renderAddressSection()}
+            </View>
           </List.Accordion>
           <Divider />
 
@@ -758,6 +847,21 @@ const createStyles = (theme: MD3ThemeExtended) =>
     textError: {
       color: theme.colors.error,
       ...theme.fonts.bodySmall,
+    },
+    addressNote: {
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 8,
+      fontStyle: "italic",
+    },
+    addressRow: {
+      flexDirection: "row",
+      gap: 12,
+    },
+    streetInput: {
+      flex: 3,
+    },
+    houseNumberInput: {
+      flex: 1,
     },
   });
 
