@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
   ProgressBar,
   FAB,
+  SegmentedButtons,
 } from "react-native-paper";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { MD3ThemeExtended } from "@/constants/Themes";
@@ -140,6 +141,7 @@ const AddingTripPointViewA = () => {
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [nameError, setNameError] = useState(false);
+  const [timeError, setTimeError] = useState<string>("");
 
   // --- Effects ---
 
@@ -193,6 +195,15 @@ const AddingTripPointViewA = () => {
       }
     }
   }, [fetchedPlaceDetails]);
+
+  // Validate time range
+  useEffect(() => {
+    if (startTime.getTime() > endTime.getTime()) {
+      setTimeError("Godzina zakończenia jest przed godziną rozpoczęcia");
+    } else {
+      setTimeError("");
+    }
+  }, [startTime, endTime]);
 
   // --- Helpers ---
 
@@ -263,6 +274,9 @@ const AddingTripPointViewA = () => {
   const handleNext = () => {
     if (step === 1 && !tripPointName.trim()) {
       setNameError(true);
+      return;
+    }
+    if (step === 1 && timeError) {
       return;
     }
     if (step < TOTAL_STEPS - 1) setStep(step + 1);
@@ -387,12 +401,13 @@ const AddingTripPointViewA = () => {
           console.log("changed");
           setNameError(text.trim().length === 0);
         }}
-        style={styles.input}
         mode="outlined"
         error={nameError}
       />
-      {nameError && (
+      {nameError ? (
         <Text style={styles.textError}>Nazwa punktu jest wymagana</Text>
+      ) : (
+        <Text style={styles.textError}> </Text>
       )}
 
       <TripPointTypePicker
@@ -408,6 +423,7 @@ const AddingTripPointViewA = () => {
         label="Godzina rozpoczęcia*"
         style={{ width: "100%" }}
         inputStyle={{ width: "100%" }}
+        error={!!timeError}
       />
 
       <TimePicker
@@ -418,34 +434,60 @@ const AddingTripPointViewA = () => {
         label="Godzina zakończenia*"
         style={{ width: "100%" }}
         inputStyle={{ width: "100%" }}
+        error={!!timeError}
       />
+      {timeError && <Text style={styles.textError}>{timeError}</Text>}
     </ScrollView>
   );
 
   const renderStep2 = () => (
     <ScrollView style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Koszty i notatki</Text>
+      <Text style={styles.stepTitle}>Koszty</Text>
 
       <CurrencyValueInput
         budget={expectedCost}
         handleBudgetChange={setExpectedCost}
         currency={tripDetails?.currencyCode || "EUR"}
         label="Przewidywany koszt"
+        placeholder="0,00"
         currencyDisable={true}
       />
 
-      <TextInput
-        label="Notatka (opcjonalne)"
-        value={comment}
-        onChangeText={setComment}
-        style={[styles.input, { height: 100 }]}
-        multiline
-        mode="outlined"
+      <SegmentedButtons
+        value={costType}
+        onValueChange={setCostType}
+        style={styles.segmentedButtons}
+        buttons={[
+          {
+            value: "perPerson",
+            label: "Na osobę",
+          },
+          {
+            value: "total",
+            label: "Łącznie",
+          },
+        ]}
       />
     </ScrollView>
   );
 
   const renderStep3 = () => (
+    <ScrollView style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Notatki</Text>
+
+      <TextInput
+        label="Notatka (opcjonalne)"
+        value={comment}
+        onChangeText={setComment}
+        numberOfLines={6}
+        contentStyle={{ height: 150 }}
+        multiline={true}
+        mode="outlined"
+      />
+    </ScrollView>
+  );
+
+  const renderStep4 = () => (
     <ScrollView style={styles.stepContainer}>
       <Text style={styles.stepTitle}>Podsumowanie</Text>
 
@@ -496,6 +538,7 @@ const AddingTripPointViewA = () => {
         {step === 1 && renderStep1()}
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
+        {step === 4 && renderStep4()}
       </View>
 
       <View style={styles.navigationButtons}>
@@ -568,10 +611,6 @@ const createStyles = (theme: MD3ThemeExtended) =>
       marginBottom: 10,
       backgroundColor: theme.colors.elevation.level1,
     },
-    input: {
-      marginBottom: 5,
-      backgroundColor: theme.colors.surface,
-    },
     navigationButtons: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -584,6 +623,9 @@ const createStyles = (theme: MD3ThemeExtended) =>
       margin: 16,
       right: 0,
       bottom: 0,
+    },
+    segmentedButtons: {
+      marginVertical: 15,
     },
     summaryRow: {
       marginBottom: 10,

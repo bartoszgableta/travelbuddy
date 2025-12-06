@@ -18,6 +18,7 @@ interface CurrencyValueInputProps {
   error?: boolean;
   currencyDisable?: boolean;
   label?: string;
+  placeholder?: string;
 }
 
 const CurrencyValueInput = ({
@@ -27,6 +28,7 @@ const CurrencyValueInput = ({
   error,
   currencyDisable = false,
   label = "Budżet",
+  placeholder = "0.00",
 }: CurrencyValueInputProps) => {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -61,7 +63,7 @@ const CurrencyValueInput = ({
         style={styles.budgetInput}
         label={label}
         value={displayBudget}
-        placeholder="0.00"
+        placeholder={placeholder}
         onChangeText={handleChange}
         onEndEditing={handleEndEditing}
         keyboardType="decimal-pad"
@@ -92,16 +94,13 @@ const createStyles = (theme: MD3Theme) =>
       alignItems: "center",
       justifyContent: "space-between",
       width: "100%",
-      marginVertical: 10,
     },
     budgetInput: {
       flex: 0.65,
-      marginLeft: 0.05 * width,
       backgroundColor: theme.colors.surface,
     },
     currencyTouchable: {
       flex: 0.3,
-      marginRight: 0.05 * width,
     },
     currencyInput: {
       backgroundColor: theme.colors.surface,

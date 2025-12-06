@@ -87,7 +87,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 5,
     paddingVertical: 10,
   },
   timeText: {

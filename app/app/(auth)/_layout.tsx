@@ -16,8 +16,8 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
-        navigationBarHidden: true,
-        statusBarHidden: true,
+        // navigationBarHidden: true,
+        // statusBarHidden: true,
         navigationBarColor: "transparent",
         headerShown: false,
         contentStyle: { backgroundColor: "transparent" },

@@ -79,7 +79,6 @@ const createStyles = (theme: MD3Theme) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      width: "90%",
       marginVertical: 10,
       flexWrap: "wrap",
     },
