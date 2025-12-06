@@ -67,10 +67,6 @@ const AddingTripPointView = () => {
   const { trip_id, day_id, date, attractionProviderId } =
     useLocalSearchParams();
 
-  useEffect(() => {
-    console.log(attractionProviderId);
-  }, [attractionProviderId]);
-
   useAnimatedKeyboard();
 
   const { api } = useAuth();

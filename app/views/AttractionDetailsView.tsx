@@ -173,6 +173,7 @@ const AttractionDetailsView = () => {
 
   const onAddButtonPress = () => {
     if (trip_id && day_id && date && place_id) {
+      console.log("dismissing with id:", place_id);
       router.dismissTo({
         // @ts-ignore
         pathname: `/trips/details/${trip_id}/day/${day_id}/tripPoints/create`,

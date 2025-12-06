@@ -146,6 +146,13 @@ const AddingTripPointViewB = () => {
   const [nameError, setNameError] = useState(false);
   const [timeError, setTimeError] = useState<string>("");
 
+  useEffect(() => {
+    if (attractionProviderId) {
+      setSelectedPlaceId(attractionProviderId as string);
+      router.setParams({ attractionProviderId: undefined });
+    }
+  }, [attractionProviderId]);
+
   // --- Section Completion Status ---
   const isSectionComplete = useMemo(() => {
     return {
@@ -537,7 +544,7 @@ const AddingTripPointViewB = () => {
     <View style={styles.sectionContent}>
       {selectedPlaceId && (
         <Text variant="bodySmall" style={styles.addressNote}>
-          Adres został pobrany z wybranego miejsca. Możesz go edytować poniżej.
+          Pola wypełnione automatycznie na podstawie wybranej atrakcji
         </Text>
       )}
       <TextInput
@@ -546,6 +553,7 @@ const AddingTripPointViewB = () => {
         onChangeText={setCountry}
         mode="outlined"
         style={styles.input}
+        disabled={!!selectedPlaceId}
       />
       <TextInput
         label="Województwo/Region"
@@ -553,6 +561,7 @@ const AddingTripPointViewB = () => {
         onChangeText={setState}
         mode="outlined"
         style={styles.input}
+        disabled={!!selectedPlaceId}
       />
       <TextInput
         label="Miasto"
@@ -560,6 +569,7 @@ const AddingTripPointViewB = () => {
         onChangeText={setCity}
         mode="outlined"
         style={styles.input}
+        disabled={!!selectedPlaceId}
       />
       <View style={styles.addressRow}>
         <TextInput
@@ -568,6 +578,7 @@ const AddingTripPointViewB = () => {
           onChangeText={setStreet}
           mode="outlined"
           style={[styles.input, styles.streetInput]}
+          disabled={!!selectedPlaceId}
         />
         <TextInput
           label="Numer domu"
@@ -575,6 +586,7 @@ const AddingTripPointViewB = () => {
           onChangeText={setHouseNumber}
           mode="outlined"
           style={[styles.input, styles.houseNumberInput]}
+          disabled={!!selectedPlaceId}
         />
       </View>
     </View>

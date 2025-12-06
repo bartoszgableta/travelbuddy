@@ -109,9 +109,7 @@ const AddingTripPointViewA = () => {
     useState(false);
 
   // --- Form State ---
-  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(
-    (attractionProviderId as string) || null,
-  );
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
   // Fetch place details if selectedPlaceId is set (either from params or selection)
   const { placeDetails: fetchedPlaceDetails, loading: placeLoading } =
@@ -119,6 +117,14 @@ const AddingTripPointViewA = () => {
       selectedPlaceId || undefined,
       selectedPlaceId ? ATTRACTION_DETAILS_ENDPOINT : PLACE_DETAILS_ENDPOINT,
     );
+
+  useEffect(() => {
+    if (attractionProviderId) {
+      setSelectedPlaceId(attractionProviderId as string);
+      setStep(1);
+      router.setParams({ attractionProviderId: undefined });
+    }
+  }, [attractionProviderId]);
 
   const [tripPointName, setTripPointName] = useState<string>("");
   const [tripPointCategory, setTripPointCategory] = useState<
@@ -201,12 +207,6 @@ const AddingTripPointViewA = () => {
       setCity(fetchedPlaceDetails.city || "");
       setStreet(fetchedPlaceDetails.street || "");
       setHouseNumber(fetchedPlaceDetails.houseNumber || "");
-
-      // If we just selected a place, we might want to auto-advance or just fill data
-      // If attractionProviderId was passed initially, we might want to skip step 0
-      if (attractionProviderId && step === 0) {
-        setStep(1);
-      }
     }
   }, [fetchedPlaceDetails]);
 
