@@ -473,7 +473,7 @@ const AddingTripPointViewA = () => {
         )}
 
         <TextInput
-          label="Państwo"
+          label="Kraj"
           value={country}
           onChangeText={setCountry}
           mode="outlined"
@@ -556,7 +556,7 @@ const AddingTripPointViewA = () => {
       <Text style={styles.stepTitle}>Notatki</Text>
 
       <TextInput
-        label="Notatka (opcjonalne)"
+        label="Notatki (opcjonalne)"
         value={comment}
         onChangeText={setComment}
         numberOfLines={6}

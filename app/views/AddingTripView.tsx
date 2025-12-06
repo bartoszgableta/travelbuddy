@@ -347,16 +347,17 @@ const AddingTripView = () => {
               <Text style={styles.textError}>{errors.numberOfPeople}</Text>
             )}
 
-            <CurrencyValueInput
-              budget={budget}
-              currency={currency}
-              handleBudgetChange={handleChange(setBudget, "budget")}
-              error={!!errors.budget}
-            />
-            {errors.budget && (
-              <Text style={styles.textError}>{errors.budget}</Text>
-            )}
-
+            <View style={{ marginHorizontal: 20 }}>
+              <CurrencyValueInput
+                budget={budget}
+                currency={currency}
+                handleBudgetChange={handleChange(setBudget, "budget")}
+                error={!!errors.budget}
+              />
+              {errors.budget && (
+                <Text style={styles.textError}>{errors.budget}</Text>
+              )}
+            </View>
             <ClickableInput
               icon="account"
               label="Profil preferencji"

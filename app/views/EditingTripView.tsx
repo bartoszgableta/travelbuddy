@@ -419,6 +419,7 @@ const EditTripView = () => {
               onPress={() => router.push("/trips/add/destination")}
               icon={MARKER_ICON}
               error={!!errors.destinationPlace}
+              disabled
             />
             {errors.destinationPlace && (
               <Text style={styles.textError}>{errors.destinationPlace}</Text>
@@ -438,16 +439,18 @@ const EditTripView = () => {
               <Text style={styles.textError}>{errors.numberOfTravelers}</Text>
             )}
 
-            <CurrencyValueInput
-              budget={editTripRequest.budget}
-              currency={editTripRequest.currencyCode}
-              handleBudgetChange={handleChange("budget")}
-              error={!!errors.budget}
-              currencyDisable={true}
-            />
-            {errors.budget && (
-              <Text style={styles.textError}>{errors.budget}</Text>
-            )}
+            <View style={{ marginHorizontal: 20 }}>
+              <CurrencyValueInput
+                budget={editTripRequest.budget}
+                currency={editTripRequest.currencyCode}
+                handleBudgetChange={handleChange("budget")}
+                error={!!errors.budget}
+                currencyDisable={true}
+              />
+              {errors.budget && (
+                <Text style={styles.textError}>{errors.budget}</Text>
+              )}
+            </View>
 
             <ClickableInput
               icon="account"

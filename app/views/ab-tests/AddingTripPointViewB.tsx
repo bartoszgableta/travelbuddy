@@ -375,9 +375,6 @@ const AddingTripPointViewB = () => {
   };
 
   const renderSectionIcon = (sectionId: SectionId, defaultIcon: string) => {
-    if (isSectionComplete[sectionId] && sectionId !== "place") {
-      return <List.Icon icon="check-circle" color={theme.colors.primary} />;
-    }
     return <List.Icon icon={defaultIcon} />;
   };
 
@@ -551,7 +548,7 @@ const AddingTripPointViewB = () => {
         style={styles.input}
       />
       <TextInput
-        label="Województwo/Stan"
+        label="Województwo/Region"
         value={state}
         onChangeText={setState}
         mode="outlined"
@@ -573,7 +570,7 @@ const AddingTripPointViewB = () => {
           style={[styles.input, styles.streetInput]}
         />
         <TextInput
-          label="Nr"
+          label="Numer domu"
           value={houseNumber}
           onChangeText={setHouseNumber}
           mode="outlined"
@@ -674,7 +671,7 @@ const AddingTripPointViewB = () => {
                     .join(", ")
                 : "Opcjonalne"
             }
-            left={(props) => renderSectionIcon("address", "map-marker")}
+            left={(props) => renderSectionIcon("address", "home-map-marker")}
             expanded={expandedSections.includes("address")}
             onPress={() => toggleSection("address")}
             style={styles.accordion}

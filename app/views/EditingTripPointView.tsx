@@ -414,7 +414,7 @@ const EditingTripPointView = () => {
             <TextInput
               mode="outlined"
               style={styles.textInput}
-              label="Nazwa"
+              label="Nazwa*"
               value={tripPointName}
               placeholder={tripPointName}
               onChangeText={handleChange(setTripPointName, "tripPointName")}
@@ -427,10 +427,42 @@ const EditingTripPointView = () => {
               <Text style={styles.textError}>{errors.tripPointName}</Text>
             )}
 
+            <View style={styles.typePicker}>
+              <TripPointTypePicker
+                onPress={() => setIsSheetVisible(true)}
+                selectedCategory={tripPointCategory}
+                disabled={isAttraction}
+              />
+            </View>
+
+            <TimePicker
+              date={startTime}
+              showPicker={isStartDatePickerVisible}
+              setShowPicker={setIsStartDatePickerVisible}
+              onDateChange={handleChange(setStartTime, "startTime")}
+              label="Godzina rozpoczęcia*"
+              error={!!errors.startTime || !!errors.endTime}
+            ></TimePicker>
+            {errors.startTime && (
+              <Text style={styles.textError}>{errors.startTime}</Text>
+            )}
+
+            <TimePicker
+              date={endTime}
+              showPicker={isEndDatePickerVisible}
+              setShowPicker={setIsEndDatePickerVisible}
+              onDateChange={handleChange(setEndTime, "endTime")}
+              label="Godzina zakończenia*"
+              error={!!errors.startTime || !!errors.endTime}
+            ></TimePicker>
+            {errors.endTime && (
+              <Text style={styles.textError}>{errors.endTime}</Text>
+            )}
+
             <TextInput
               mode="outlined"
               style={isAttraction ? styles.textInputDisabled : styles.textInput}
-              label="Państwo"
+              label="Kraj"
               disabled={isAttraction}
               value={
                 isAttraction
@@ -450,7 +482,7 @@ const EditingTripPointView = () => {
             <TextInput
               mode="outlined"
               style={isAttraction ? styles.textInputDisabled : styles.textInput}
-              label="Prowincja"
+              label="Województwo/Region"
               disabled={isAttraction}
               value={
                 isAttraction ? (state !== null ? state : "Brak") : state || ""
@@ -463,6 +495,7 @@ const EditingTripPointView = () => {
               <Text style={styles.textError}>{errors.state}</Text>
             )}
 
+            {/* 8. Address: City */}
             <TextInput
               mode="outlined"
               style={isAttraction ? styles.textInputDisabled : styles.textInput}
@@ -500,7 +533,7 @@ const EditingTripPointView = () => {
             <TextInput
               mode="outlined"
               style={isAttraction ? styles.textInputDisabled : styles.textInput}
-              label="Numer adresu"
+              label="Numer domu"
               disabled={isAttraction}
               value={
                 isAttraction
@@ -519,59 +552,22 @@ const EditingTripPointView = () => {
               <Text style={styles.textError}>{errors.houseNumber}</Text>
             )}
 
-            <TextInput
-              mode="outlined"
-              style={isAttraction ? styles.textInputDisabled : styles.textInput}
-              label="Szerokość geograficzna"
-              disabled={isAttraction}
-              value={
-                isAttraction
-                  ? latitudeText !== null
-                    ? latitudeText
-                    : "Brak"
-                  : latitudeText || ""
-              }
-              onChangeText={setLatitudeText}
-              onEndEditing={handleLatitudeChange}
-              keyboardType="numeric"
-              error={!!errors.latitude}
-            />
-            {errors.latitude && (
-              <Text style={styles.textError}>{errors.latitude}</Text>
-            )}
-
-            <TextInput
-              mode="outlined"
-              style={isAttraction ? styles.textInputDisabled : styles.textInput}
-              label="Długość geograficzna"
-              disabled={isAttraction}
-              value={
-                isAttraction
-                  ? longitudeText !== null
-                    ? longitudeText
-                    : "Brak"
-                  : longitudeText || ""
-              }
-              onChangeText={setLongitudeText}
-              onEndEditing={handleLongitudeChange}
-              keyboardType="numeric"
-              error={!!errors.longitude}
-            />
-            {errors.longitude && (
-              <Text style={styles.textError}>{errors.longitude}</Text>
-            )}
-
-            <CurrencyValueInput
-              label={"Przewidywany koszt"}
-              budget={expectedCost}
-              currency={selectedCurrency}
-              currencyDisable={true}
-              error={!!errors.expectedCost}
-              handleBudgetChange={handleChange(setExpectedCost, "expectedCost")}
-            />
-            {errors.expectedCost && (
-              <Text style={styles.textError}>{errors.expectedCost}</Text>
-            )}
+            <View style={styles.currencyValueInput}>
+              <CurrencyValueInput
+                label={"Przewidywany koszt"}
+                budget={expectedCost}
+                currency={selectedCurrency}
+                currencyDisable={true}
+                error={!!errors.expectedCost}
+                handleBudgetChange={handleChange(
+                  setExpectedCost,
+                  "expectedCost",
+                )}
+              />
+              {errors.expectedCost && (
+                <Text style={styles.textError}>{errors.expectedCost}</Text>
+              )}
+            </View>
 
             <SegmentedButtons
               value={costType}
@@ -592,56 +588,18 @@ const EditingTripPointView = () => {
             <TextInput
               mode="outlined"
               style={styles.textInput}
-              label="Komentarz"
+              label="Notatki"
               value={comment}
               placeholder={comment}
               onChangeText={handleChange(setComment, "comment")}
               onEndEditing={() => onEndEditingString(setComment, comment)}
               error={!!errors.comment}
+              numberOfLines={6}
+              contentStyle={{ height: 150 }}
+              multiline={true}
             ></TextInput>
             {errors.comment && (
               <Text style={styles.textError}>{errors.comment}</Text>
-            )}
-
-            <TripPointTypePicker
-              onPress={() => setIsSheetVisible(true)}
-              selectedCategory={tripPointCategory}
-              disabled={isAttraction}
-            />
-
-            <TextInput
-              mode="outlined"
-              style={styles.textInput}
-              label="Data"
-              left={<TextInput.Icon icon={CALENDAR_ICON} />}
-              value={date as string}
-              placeholder={comment}
-              editable={false}
-              disabled={true}
-            ></TextInput>
-
-            <TimePicker
-              date={startTime}
-              showPicker={isStartDatePickerVisible}
-              setShowPicker={setIsStartDatePickerVisible}
-              onDateChange={handleChange(setStartTime, "startTime")}
-              label="Godzina rozpoczęcia"
-              error={!!errors.startTime || !!errors.endTime}
-            ></TimePicker>
-            {errors.startTime && (
-              <Text style={styles.textError}>{errors.startTime}</Text>
-            )}
-
-            <TimePicker
-              date={endTime}
-              showPicker={isEndDatePickerVisible}
-              setShowPicker={setIsEndDatePickerVisible}
-              onDateChange={handleChange(setEndTime, "endTime")}
-              label="Godzina zakończenia"
-              error={!!errors.startTime || !!errors.endTime}
-            ></TimePicker>
-            {errors.endTime && (
-              <Text style={styles.textError}>{errors.endTime}</Text>
             )}
           </View>
 
@@ -685,6 +643,10 @@ const createStyles = (theme: MD3Theme) =>
       paddingBottom: 20,
       backgroundColor: theme.colors.surface,
     },
+    currencyValueInput: {
+      marginHorizontal: 20,
+      marginVertical: 10,
+    },
     image: {
       marginVertical: 25,
       width: "100%",
@@ -702,6 +664,7 @@ const createStyles = (theme: MD3Theme) =>
       marginVertical: 10,
       backgroundColor: theme.colors.inverseOnSurface,
     },
+    typePicker: {},
     modal: {
       backgroundColor: theme.colors.surface,
       marginHorizontal: "10%",

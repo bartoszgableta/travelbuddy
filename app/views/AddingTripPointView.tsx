@@ -434,7 +434,7 @@ const AddingTripPointView = () => {
             <TextInput
               mode="outlined"
               style={isAttraction ? styles.textInputDisabled : styles.textInput}
-              label="Prowincja"
+              label="Województwo/Region"
               disabled={isAttraction}
               value={
                 isAttraction ? (state !== null ? state : "Brak") : state || ""
