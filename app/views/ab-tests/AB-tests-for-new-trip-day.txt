@@ -1,0 +1,4 @@
+AB versions of tripDetailsView and TripDayView here:
+app/app/(auth)/(tabs)/trips/details/[trip_id]/day/[day_id]/index.tsx
+app/app/(auth)/(tabs)/trips/details/[trip_id]/index.tsx
+app/views/ab-tests/TripDetailsViewAB.tsx

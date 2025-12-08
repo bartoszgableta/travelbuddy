@@ -13,7 +13,9 @@ import {
 } from "react-native-paper";
 import { FlatList } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import ActionMenuBottomSheet from "@/components/ActionMenu/ActionMenuBottomSheet";
+import ActionMenuBottomSheet, {
+  Action,
+} from "@/components/ActionMenu/ActionMenuBottomSheet";
 import CustomModal from "@/components/CustomModal";
 import ActionTextButtons from "@/components/ActionTextButtons";
 import { DELETE_ICON, DETAILS_ICON, EDIT_ICON } from "@/constants/Icons";
