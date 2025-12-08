@@ -31,7 +31,7 @@ const TripDayNavbarWrapper = () => {
   }, [tripDetails]);
 
   const handleDayPress = (dayId: string) => {
-    router.push(`/trips/details/${trip_id}/day/${dayId}`);
+    router.replace(`/trips/details/${trip_id}/day/${dayId}`);
   };
 
   return (
