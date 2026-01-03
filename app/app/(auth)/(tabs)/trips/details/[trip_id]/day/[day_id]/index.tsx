@@ -97,13 +97,7 @@ const TripDayScrollWrapper = () => {
     () => createScrollStyles(theme as MD3ThemeExtended),
     [theme],
   );
-  const { trip_id, day_id } = useLocalSearchParams();
-
-  const [selectedDayId, setSelectedDayId] = useState<string>(
-    Array.isArray(day_id) ? day_id[0] : day_id,
-  );
-
-  const scrollViewRef = React.useRef<ScrollView>(null);
+  const { trip_id } = useLocalSearchParams();
 
   const { tripDetails } = useTripDetails(trip_id as string);
 
@@ -113,10 +107,13 @@ const TripDayScrollWrapper = () => {
     );
   }, [tripDetails]);
 
-  const currentIndex = useMemo(() => {
-    return sortedDays.findIndex((day) => day.id === selectedDayId);
-  }, [sortedDays, selectedDayId]);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
 
+  const scrollViewRef = React.useRef<ScrollView>(null);
+
+  const currentIndex = useMemo(() => {
+    return sortedDays.findIndex((day, idx) => idx === selectedDayIndex);
+  }, [sortedDays, selectedDayIndex]);
   // Scroll to current day on mount
   useEffect(() => {
     if (currentIndex >= 0 && scrollViewRef.current) {
@@ -131,8 +128,7 @@ const TripDayScrollWrapper = () => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(offsetX / width);
     if (index !== currentIndex && index >= 0 && index < sortedDays.length) {
-      const newDay = sortedDays[index];
-      setSelectedDayId(newDay.id);
+      setSelectedDayIndex(index);
     }
   };
 
@@ -157,10 +153,10 @@ const TripDayScrollWrapper = () => {
                 })}
               </Text>
             </View>
-            {day.id === selectedDayId && (
+            {index === selectedDayIndex && (
               <TripDayViewForScroll
                 trip_id={Array.isArray(trip_id) ? trip_id[0] : trip_id}
-                day_id={Array.isArray(day_id) ? day_id[0] : day_id}
+                day_id={day.id}
               />
             )}
           </View>
