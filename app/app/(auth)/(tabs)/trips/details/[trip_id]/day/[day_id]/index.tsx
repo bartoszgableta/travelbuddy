@@ -5,8 +5,15 @@
 // }
 
 import TripDayView from "@/views/TripDayView";
+import TripDayViewForScroll from "@/views/TripDayViewForScroll";
 import useAppSettings from "@/hooks/useAppSettings";
-import { StyleSheet, View, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import React, { useState, useMemo, useEffect } from "react";
 import { Text, useTheme } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router";
@@ -19,14 +26,17 @@ const { width } = Dimensions.get("window");
 // Version A: Navbar with embedded TripDay
 const TripDayNavbarWrapper = () => {
   const theme = useTheme();
-  const styles = useMemo(() => createNavbarStyles(theme as MD3ThemeExtended), [theme]);
+  const styles = useMemo(
+    () => createNavbarStyles(theme as MD3ThemeExtended),
+    [theme],
+  );
   const { trip_id, day_id } = useLocalSearchParams();
 
   const { tripDetails } = useTripDetails(trip_id as string);
 
   const sortedDays = useMemo(() => {
     return [...(tripDetails?.tripDays || [])].sort((a, b) =>
-      a.date.localeCompare(b.date)
+      a.date.localeCompare(b.date),
     );
   }, [tripDetails]);
 
@@ -47,23 +57,27 @@ const TripDayNavbarWrapper = () => {
               key={day.id}
               style={[
                 styles.dayTab,
-                day_id === day.id && styles.dayTabSelected
+                day_id === day.id && styles.dayTabSelected,
               ]}
               onPress={() => handleDayPress(day.id)}
             >
-              <Text style={[
-                styles.dayTabText,
-                day_id === day.id && styles.dayTabTextSelected
-              ]}>
+              <Text
+                style={[
+                  styles.dayTabText,
+                  day_id === day.id && styles.dayTabTextSelected,
+                ]}
+              >
                 Dzień {index + 1}
               </Text>
-              <Text style={[
-                styles.dayTabDate,
-                day_id === day.id && styles.dayTabDateSelected
-              ]}>
-                {new Date(day.date).toLocaleDateString('pl-PL', {
-                  day: 'numeric',
-                  month: 'short'
+              <Text
+                style={[
+                  styles.dayTabDate,
+                  day_id === day.id && styles.dayTabDateSelected,
+                ]}
+              >
+                {new Date(day.date).toLocaleDateString("pl-PL", {
+                  day: "numeric",
+                  month: "short",
                 })}
               </Text>
             </TouchableOpacity>
@@ -79,26 +93,37 @@ const TripDayNavbarWrapper = () => {
 // Version B: Horizontal scroll with embedded TripDay
 const TripDayScrollWrapper = () => {
   const theme = useTheme();
-  const styles = useMemo(() => createScrollStyles(theme as MD3ThemeExtended), [theme]);
+  const styles = useMemo(
+    () => createScrollStyles(theme as MD3ThemeExtended),
+    [theme],
+  );
   const { trip_id, day_id } = useLocalSearchParams();
+
+  const [selectedDayId, setSelectedDayId] = useState<string>(
+    Array.isArray(day_id) ? day_id[0] : day_id,
+  );
+
   const scrollViewRef = React.useRef<ScrollView>(null);
 
   const { tripDetails } = useTripDetails(trip_id as string);
 
   const sortedDays = useMemo(() => {
     return [...(tripDetails?.tripDays || [])].sort((a, b) =>
-      a.date.localeCompare(b.date)
+      a.date.localeCompare(b.date),
     );
   }, [tripDetails]);
 
   const currentIndex = useMemo(() => {
-    return sortedDays.findIndex(day => day.id === day_id);
-  }, [sortedDays, day_id]);
+    return sortedDays.findIndex((day) => day.id === selectedDayId);
+  }, [sortedDays, selectedDayId]);
 
   // Scroll to current day on mount
   useEffect(() => {
     if (currentIndex >= 0 && scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: currentIndex * width, animated: false });
+      scrollViewRef.current.scrollTo({
+        x: currentIndex * width,
+        animated: false,
+      });
     }
   }, [currentIndex]);
 
@@ -107,7 +132,7 @@ const TripDayScrollWrapper = () => {
     const index = Math.round(offsetX / width);
     if (index !== currentIndex && index >= 0 && index < sortedDays.length) {
       const newDay = sortedDays[index];
-      router.replace(`/trips/details/${trip_id}/day/${newDay.id}`);
+      setSelectedDayId(newDay.id);
     }
   };
 
@@ -126,13 +151,18 @@ const TripDayScrollWrapper = () => {
             <View style={styles.dayHeader}>
               <Text style={styles.dayTitle}>Dzień {index + 1}</Text>
               <Text style={styles.dayDate}>
-                {new Date(day.date).toLocaleDateString('pl-PL', {
-                  day: 'numeric',
-                  month: 'long'
+                {new Date(day.date).toLocaleDateString("pl-PL", {
+                  day: "numeric",
+                  month: "long",
                 })}
               </Text>
             </View>
-            {day.id === day_id && <TripDayView />}
+            {day.id === selectedDayId && (
+              <TripDayViewForScroll
+                trip_id={Array.isArray(trip_id) ? trip_id[0] : trip_id}
+                day_id={Array.isArray(day_id) ? day_id[0] : day_id}
+              />
+            )}
           </View>
         ))}
       </ScrollView>
@@ -143,7 +173,7 @@ const TripDayScrollWrapper = () => {
             key={index}
             style={[
               styles.paginationDot,
-              index === currentIndex && styles.paginationDotActive
+              index === currentIndex && styles.paginationDotActive,
             ]}
           />
         ))}
@@ -188,7 +218,7 @@ const createNavbarStyles = (theme: MD3ThemeExtended) =>
       paddingHorizontal: 20,
       borderRadius: 20,
       minWidth: 100,
-      alignItems: 'center',
+      alignItems: "center",
     },
     dayTabSelected: {
       backgroundColor: theme.colors.primary,
@@ -200,7 +230,7 @@ const createNavbarStyles = (theme: MD3ThemeExtended) =>
     },
     dayTabTextSelected: {
       color: theme.colors.onPrimary,
-      fontWeight: 'bold',
+      fontWeight: "bold",
     },
     dayTabDate: {
       fontSize: 12,
@@ -226,11 +256,11 @@ const createScrollStyles = (theme: MD3ThemeExtended) =>
       backgroundColor: theme.colors.elevation.level2,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.outlineVariant,
-      alignItems: 'center',
+      alignItems: "center",
     },
     dayTitle: {
       fontSize: 24,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       color: theme.colors.primary,
       marginBottom: 4,
     },
@@ -239,15 +269,15 @@ const createScrollStyles = (theme: MD3ThemeExtended) =>
       color: theme.colors.onSurface,
     },
     pagination: {
-      position: 'absolute',
+      position: "absolute",
       bottom: 80,
       left: 0,
       right: 0,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
       gap: 8,
-      pointerEvents: 'none',
+      pointerEvents: "none",
     },
     paginationDot: {
       width: 8,
