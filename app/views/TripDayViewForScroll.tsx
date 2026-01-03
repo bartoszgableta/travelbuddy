@@ -1035,6 +1035,7 @@ const createStyles = (theme: MD3ThemeExtended) =>
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
+      backgroundColor: theme.colors.surface,
     },
   });
 

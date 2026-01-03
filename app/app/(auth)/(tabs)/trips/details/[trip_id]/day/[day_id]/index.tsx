@@ -245,7 +245,7 @@ const createScrollStyles = (theme: MD3ThemeExtended) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.surface,
     },
     dayContainer: {
       width: width,
@@ -253,7 +253,7 @@ const createScrollStyles = (theme: MD3ThemeExtended) =>
     },
     dayHeader: {
       padding: 16,
-      backgroundColor: theme.colors.elevation.level2,
+      backgroundColor: theme.colors.surface,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.outlineVariant,
       alignItems: "center",
