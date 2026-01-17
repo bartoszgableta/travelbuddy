@@ -17,12 +17,12 @@ export default function TabLayout() {
           title: "Wycieczki",
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="explore"
         options={{
           title: "Eksploruj",
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="settings"
         options={{
