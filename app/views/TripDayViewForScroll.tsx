@@ -16,12 +16,11 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
+import { useRouter } from "expo-router";
 import { TripPointCard } from "@/components/TripPointCard";
 import { TransferPointNode } from "@/components/TransferPointNode";
 import CreatingTripPointSelector from "@/components/CreatingTripPointSelector";
 import ActionButtons from "@/components/ActionButtons";
-import LoadingView from "./LoadingView";
 import { MD3ThemeExtended } from "@/constants/Themes";
 import {
   TripPointCompact,
@@ -808,14 +807,6 @@ const TripDayView = ({
     }
     return false;
   };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingView}>
-        <ActivityIndicator size="large" animating={true} />
-      </View>
-    );
-  }
 
   if (error) {
     router.back();

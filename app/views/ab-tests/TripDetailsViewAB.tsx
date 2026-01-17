@@ -8,7 +8,7 @@ import React, {
   useLayoutEffect,
 } from "react";
 import TripDetailLabel from "@/components/TripDetailLabel";
-import { FAB, Text, useTheme } from "react-native-paper";
+import { Button, List, Text, useTheme } from "react-native-paper";
 import {
   CALENDAR_ICON,
   DELETE_ICON,
@@ -195,9 +195,6 @@ const TripDetailsView = () => {
   ]);
 
   const labels: Record<string, string> = {
-    name: "Nazwa wycieczki",
-    dateRange: "Termin wycieczki",
-    destination: "Cel wycieczki",
     numberOfTripPoints: "Liczba punktów wycieczki",
     numberOfTravelers: "Liczba osób",
     predictedCost: "Przewidywany koszt wycieczki",
@@ -287,8 +284,68 @@ const TripDetailsView = () => {
             resizeMode="cover"
           />
 
-          <View style={styles.detailsContainer}>
-            <View style={styles.entriesContainer}>
+          <View style={styles.headerInfoContainer}>
+            <Text variant="headlineMedium" style={styles.tripName}>
+              {tripViewModel?.name}
+            </Text>
+            <Text variant="titleMedium" style={styles.tripDestination}>
+              {tripViewModel?.destination}
+            </Text>
+            <Text variant="bodyLarge" style={styles.tripDate}>
+              {tripViewModel?.dateRange}
+            </Text>
+          </View>
+
+          <View style={styles.actionContainer}>
+            <Button
+              mode="contained"
+              icon={CALENDAR_ICON}
+              style={styles.planButton}
+              contentStyle={styles.planButtonContent}
+              labelStyle={styles.planButtonLabel}
+              onPress={() => {
+                const firstDay = tripDetails?.tripDays?.find(
+                  (day) => day.date === tripDetails.startDate,
+                );
+                if (firstDay) {
+                  router.push(`/trips/details/${trip_id}/day/${firstDay.id}`);
+                }
+              }}
+            >
+              Planuj dni
+            </Button>
+          </View>
+
+          {tripDetails?.tripDays && tripDetails.tripDays.length > 0 && (
+            <List.Section style={styles.daysList} title="Plan wycieczki">
+              {tripDetails.tripDays
+                .sort((a, b) => a.date.localeCompare(b.date))
+                .map((day, index) => (
+                  <List.Item
+                    key={day.id}
+                    title={`Dzień ${index + 1}`}
+                    description={day.date}
+                    left={(props) => (
+                      <List.Icon {...props} icon={CALENDAR_ICON} />
+                    )}
+                    onPress={() =>
+                      router.push(`/trips/details/${trip_id}/day/${day.id}`)
+                    }
+                    right={(props) => (
+                      <List.Icon {...props} icon="chevron-right" />
+                    )}
+                    style={styles.dayItem}
+                  />
+                ))}
+            </List.Section>
+          )}
+
+          <List.Accordion
+            title="Szczegóły i koszty"
+            style={styles.detailsAccordion}
+            titleStyle={styles.detailsAccordionTitle}
+          >
+            <View style={styles.detailsContainer}>
               {tripViewModel &&
                 Object.entries(tripViewModel)
                   .filter(([key]) => key in labels)
@@ -300,24 +357,7 @@ const TripDetailsView = () => {
                     />
                   ))}
             </View>
-
-            <FAB
-              color={theme.colors.onPrimary}
-              style={styles.fab}
-              icon={CALENDAR_ICON}
-              label="Planuj dni"
-              customSize={width * 0.25}
-              onPress={() => {
-                // Navigate to first day - the day screen will handle variant
-                const firstDay = tripDetails?.tripDays?.find(
-                  (day) => day.date === tripDetails.startDate,
-                );
-                if (firstDay) {
-                  router.push(`/trips/details/${trip_id}/day/${firstDay.id}`);
-                }
-              }}
-            />
-          </View>
+          </List.Accordion>
         </ScrollView>
 
         {tripDetails && (
@@ -365,23 +405,63 @@ const createStyles = (theme: MD3ThemeExtended) =>
       alignItems: "center",
       paddingBottom: 25,
     },
+    headerInfoContainer: {
+      width: "100%",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      marginBottom: 20,
+    },
+    tripName: {
+      fontWeight: "bold",
+      textAlign: "center",
+      marginBottom: 4,
+    },
+    tripDestination: {
+      textAlign: "center",
+      marginBottom: 4,
+      color: theme.colors.outline,
+    },
+    tripDate: {
+      textAlign: "center",
+      color: theme.colors.outline,
+    },
     detailsContainer: {
       width: "100%",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      position: "relative",
+      paddingBottom: 16,
     },
-    entriesContainer: {
-      flex: 1,
-      paddingRight: 16,
+    actionContainer: {
+      width: "100%",
+      paddingHorizontal: 16,
+      marginBottom: 16,
     },
-    fab: {
-      backgroundColor: theme.colors.primary,
-      position: "absolute",
-      top: 16,
-      right: 16,
-      borderRadius: 10000,
+    // ... planButton styles ...
+    planButton: {
+      width: "100%",
+      borderRadius: 8,
+    },
+    planButtonContent: {
+      height: 48,
+    },
+    planButtonLabel: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    daysList: {
+      width: "100%",
+    },
+    dayItem: {
+      backgroundColor: theme.colors.elevation.level1,
+      marginBottom: 8,
+      borderRadius: 8,
+      marginHorizontal: 16,
+    },
+    detailsAccordion: {
+      width: "100%",
+      backgroundColor: theme.colors.surface,
+    },
+    detailsAccordionTitle: {
+      color: theme.colors.primary,
+      fontWeight: "bold",
     },
     image: {
       marginBottom: 25,
