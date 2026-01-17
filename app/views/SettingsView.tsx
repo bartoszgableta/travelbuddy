@@ -152,7 +152,7 @@ const SettingsView = () => {
             }}
           />
 
-          <SettingListItem
+          {/* <SettingListItem
             title="Wariant"
             rightComponent={() => (
               <Text style={styles.rightText}>
@@ -167,7 +167,7 @@ const SettingsView = () => {
                 selectedUXVariant,
               )
             }
-          />
+          /> */}
           <Title style={styles.title}>Profile</Title>
           <SettingListItem
             title="Profile preferencji"
