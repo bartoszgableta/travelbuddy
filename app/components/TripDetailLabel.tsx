@@ -1,17 +1,18 @@
-import { StyleSheet, View } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import React, { useMemo } from "react";
 import { MD3Theme, Text, useTheme } from "react-native-paper";
 
 interface TripDetailLabelProps {
   title: string;
   value: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-const TripDetailLabel = ({ title, value }: TripDetailLabelProps) => {
+const TripDetailLabel = ({ title, value, style }: TripDetailLabelProps) => {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.value}>{value ? value : "Brak"}</Text>
     </View>
@@ -33,6 +34,5 @@ const createStyles = (theme: MD3Theme) =>
     },
     value: {
       ...theme.fonts.titleMedium,
-      width: "60%",
     },
   });

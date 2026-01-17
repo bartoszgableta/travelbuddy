@@ -54,6 +54,7 @@ export const TripPointCard = ({
     >
       <Card.Title
         title={name}
+        titleNumberOfLines={1}
         subtitle={
           <View style={style.subtitleContainer}>
             <Text>{timeRange}</Text>

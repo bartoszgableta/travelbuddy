@@ -64,7 +64,9 @@ export const TripCard: React.FC<TripCardProps> = ({
         source={resolvedImageSource}
       />
       <Card.Content style={styles.textContent}>
-        <Text style={{ ...styles.text, ...styles.title }}>{title}</Text>
+        <Text style={{ ...styles.text, ...styles.title }} numberOfLines={1}>
+          {title}
+        </Text>
         <Text style={{ ...styles.text, ...styles.subtitle }}>{subtitle}</Text>
       </Card.Content>
     </Card>

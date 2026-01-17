@@ -52,6 +52,7 @@ const TripDetailsView = () => {
   const [tripViewModel, setTripViewModel] = useState<TripViewModel | undefined>(
     undefined,
   );
+  const [isPlanExpanded, setIsPlanExpanded] = useState(false);
 
   const { refreshScreens, addRefreshScreen, removeRefreshScreen } =
     useShouldRefresh();
@@ -77,7 +78,7 @@ const TripDetailsView = () => {
       await removeImage(tripId);
 
       addRefreshScreen("trips");
-      router.navigate("/trips");
+      router.dismissTo("/trips");
       showSnackbar("Usunięto wycieczkę!");
     } catch (error: any) {
       showSnackbar("Wystąpił błąd podczas usuwania wycieczki", "error");
@@ -320,6 +321,7 @@ const TripDetailsView = () => {
             <List.Section style={styles.daysList} title="Plan wycieczki">
               {tripDetails.tripDays
                 .sort((a, b) => a.date.localeCompare(b.date))
+                .slice(0, isPlanExpanded ? undefined : 3)
                 .map((day, index) => (
                   <List.Item
                     key={day.id}
@@ -337,6 +339,16 @@ const TripDetailsView = () => {
                     style={styles.dayItem}
                   />
                 ))}
+              {tripDetails.tripDays.length > 3 && (
+                <Button
+                  onPress={() => setIsPlanExpanded(!isPlanExpanded)}
+                  mode="text"
+                >
+                  {isPlanExpanded
+                    ? "Zwiń plan"
+                    : `Pokaż pozostałe dni (${tripDetails.tripDays.length - 3})`}
+                </Button>
+              )}
             </List.Section>
           )}
 
@@ -352,6 +364,7 @@ const TripDetailsView = () => {
                   .map(([key, value]) => (
                     <TripDetailLabel
                       key={key}
+                      style={{ width: "50%" }}
                       title={labels[key]}
                       value={value ? value.toString() : ""}
                     />
@@ -428,6 +441,8 @@ const createStyles = (theme: MD3ThemeExtended) =>
     detailsContainer: {
       width: "100%",
       paddingBottom: 16,
+      flexDirection: "row",
+      flexWrap: "wrap",
     },
     actionContainer: {
       width: "100%",
