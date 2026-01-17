@@ -96,7 +96,6 @@ const TripDayView = () => {
   const { api } = useAuth();
   const { trip_id, day_id, refresh } = params;
   const { showSnackbar } = useSnackbar();
-  const { uxVariant } = useAppSettings();
 
   const { refreshScreens, removeRefreshScreen } = useShouldRefresh();
 
@@ -848,17 +847,13 @@ const TripDayView = () => {
           color={theme.colors.onPrimary}
           label="Dodaj"
           onPress={() => {
-            if (uxVariant === "default") {
-              setIsVisible(VisibilityState.TripPoint);
-            } else {
-              router.push({
-                // @ts-ignore
-                pathname: `/trips/details/${trip_id}/day/${day_id}/tripPoints/create`,
-                params: {
-                  date: new Date(tripDay?.date as string).toLocaleDateString(),
-                },
-              });
-            }
+            router.push({
+              // @ts-ignore
+              pathname: `/trips/details/${trip_id}/day/${day_id}/tripPoints/create`,
+              params: {
+                date: new Date(tripDay?.date as string).toLocaleDateString(),
+              },
+            });
           }}
         />
         <CreatingTripPointSelector

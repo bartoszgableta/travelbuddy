@@ -309,7 +309,9 @@ const TripDetailsView = () => {
               customSize={width * 0.25}
               onPress={() => {
                 // Navigate to first day - the day screen will handle variant
-                const firstDay = tripDetails?.tripDays?.[0];
+                const firstDay = tripDetails?.tripDays?.find(
+                  (day) => day.date === tripDetails.startDate,
+                );
                 if (firstDay) {
                   router.push(`/trips/details/${trip_id}/day/${firstDay.id}`);
                 }
@@ -369,7 +371,6 @@ const createStyles = (theme: MD3ThemeExtended) =>
       justifyContent: "space-between",
       alignItems: "center",
       position: "relative",
-
     },
     entriesContainer: {
       flex: 1,

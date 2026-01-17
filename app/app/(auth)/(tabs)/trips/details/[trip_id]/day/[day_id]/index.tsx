@@ -31,6 +31,11 @@ const TripDayNavbarWrapper = () => {
     [theme],
   );
   const { trip_id, day_id } = useLocalSearchParams();
+  console.log(day_id);
+
+  const [selectedDayId, setSelectedDayId] = useState<string | null>(
+    Array.isArray(day_id) ? day_id[0] : day_id,
+  );
 
   const { tripDetails } = useTripDetails(trip_id as string);
 
@@ -41,7 +46,7 @@ const TripDayNavbarWrapper = () => {
   }, [tripDetails]);
 
   const handleDayPress = (dayId: string) => {
-    router.replace(`/trips/details/${trip_id}/day/${dayId}`);
+    setSelectedDayId(dayId);
   };
 
   return (
@@ -57,14 +62,14 @@ const TripDayNavbarWrapper = () => {
               key={day.id}
               style={[
                 styles.dayTab,
-                day_id === day.id && styles.dayTabSelected,
+                selectedDayId === day.id && styles.dayTabSelected,
               ]}
               onPress={() => handleDayPress(day.id)}
             >
               <Text
                 style={[
                   styles.dayTabText,
-                  day_id === day.id && styles.dayTabTextSelected,
+                  selectedDayId === day.id && styles.dayTabTextSelected,
                 ]}
               >
                 Dzień {index + 1}
@@ -72,7 +77,7 @@ const TripDayNavbarWrapper = () => {
               <Text
                 style={[
                   styles.dayTabDate,
-                  day_id === day.id && styles.dayTabDateSelected,
+                  selectedDayId === day.id && styles.dayTabDateSelected,
                 ]}
               >
                 {new Date(day.date).toLocaleDateString("pl-PL", {
@@ -85,7 +90,12 @@ const TripDayNavbarWrapper = () => {
         </ScrollView>
       </View>
 
-      <TripDayView />
+      {selectedDayId && (
+        <TripDayViewForScroll
+          trip_id={Array.isArray(trip_id) ? trip_id[0] : trip_id}
+          day_id={selectedDayId}
+        />
+      )}
     </View>
   );
 };
@@ -179,17 +189,7 @@ const TripDayScrollWrapper = () => {
 };
 
 export default function TripDay() {
-  const { uxVariant } = useAppSettings();
-
-  if (uxVariant === "a") {
-    return <TripDayNavbarWrapper />;
-  }
-
-  if (uxVariant === "b") {
-    return <TripDayScrollWrapper />;
-  }
-
-  return <TripDayView />;
+  return <TripDayNavbarWrapper />;
 }
 
 const createNavbarStyles = (theme: MD3ThemeExtended) =>
