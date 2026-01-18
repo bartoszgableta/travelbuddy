@@ -262,7 +262,7 @@ const TripPointDetailsView = () => {
     hideModal();
     await deleteTripPoint(tripPoint?.id);
     addRefreshScreen("trip-day");
-    router.navigate(`/trips/details/${trip_id}/day/${day_id}`);
+    router.dismissTo(`/trips/details/${trip_id}/day/${day_id}`);
   };
 
   useEffect(() => {
