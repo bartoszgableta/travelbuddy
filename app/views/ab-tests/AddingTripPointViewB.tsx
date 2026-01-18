@@ -14,6 +14,8 @@ import {
   SegmentedButtons,
   IconButton,
   Surface,
+  Icon,
+  TouchableRipple,
 } from "react-native-paper";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { MD3ThemeExtended } from "@/constants/Themes";
@@ -102,7 +104,10 @@ const AddingTripPointViewB = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isLoadingRecommendations, setIsLoadingRecommendations] =
     useState(false);
-  const [showPlaceSearch, setShowPlaceSearch] = useState(false);
+
+  type PlaceEntryMode = "selection" | "search" | "recommendations";
+  const [placeEntryMode, setPlaceEntryMode] =
+    useState<PlaceEntryMode>("selection");
 
   // --- Form State ---
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(
@@ -222,7 +227,7 @@ const AddingTripPointViewB = () => {
       if (!expandedSections.includes("basic")) {
         setExpandedSections((prev) => [...prev, "basic"]);
       }
-      setShowPlaceSearch(false);
+      setPlaceEntryMode("selection");
     }
   }, [fetchedPlaceDetails]);
 
@@ -284,10 +289,32 @@ const AddingTripPointViewB = () => {
     }
   };
 
+  const handleManualEntry = (name?: string) => {
+    setSelectedPlaceId(null);
+    setSelectedPlaceName("");
+    setTripPointName(name || "");
+    // Default category if not set
+    if (!tripPointCategory) {
+      setTripPointCategory(getCategoryByName(DEFAULT_CATEGORY_NAME));
+    }
+
+    // Move to next section
+    setPlaceEntryMode("selection");
+    setExpandedSections((prev) => {
+      const withoutPlace = prev.filter((id) => id !== "place");
+      if (!withoutPlace.includes("basic")) {
+        return [...withoutPlace, "basic"];
+      }
+      return withoutPlace;
+    });
+  };
+
   const handlePlaceSelect = (place: PlaceViewModel) => {
     setSelectedPlaceId(place.providerId);
     setSelectedPlaceName(place.title || "");
-    setShowPlaceSearch(false);
+    // Clear query
+    setSearchQuery("");
+    setPlaceEntryMode("selection");
   };
 
   const handleDetailsPress = (place: PlaceViewModel) => {
@@ -309,6 +336,7 @@ const AddingTripPointViewB = () => {
     setCity("");
     setStreet("");
     setHouseNumber("");
+    setPlaceEntryMode("selection");
   };
 
   const handleSubmit = async () => {
@@ -392,9 +420,9 @@ const AddingTripPointViewB = () => {
     return <List.Icon icon={defaultIcon} />;
   };
 
-  const renderPlaceSection = () => (
-    <>
-      {selectedPlaceId ? (
+  const renderPlaceSection = () => {
+    if (selectedPlaceId) {
+      return (
         <Surface style={styles.selectedPlaceCard} elevation={1}>
           <View style={styles.selectedPlaceContent}>
             <View style={{ flex: 1 }}>
@@ -409,91 +437,169 @@ const AddingTripPointViewB = () => {
             <IconButton icon="close" size={20} onPress={handleClearPlace} />
           </View>
         </Surface>
-      ) : showPlaceSearch ? (
+      );
+    }
+
+    if (placeEntryMode === "search") {
+      return (
         <View style={styles.searchContainer}>
           <Searchbar
-            placeholder="Wyszukaj atrakcję..."
+            placeholder="Szukaj lub wpisz nazwę..."
             onChangeText={onSearchQueryChange}
             value={searchQuery}
             style={styles.searchBar}
+            loading={isSearching}
+            icon="arrow-left"
+            onIconPress={() => setPlaceEntryMode("selection")}
             autoFocus
           />
 
-          {isSearching || isLoadingRecommendations ? (
-            <ActivityIndicator animating={true} style={{ marginTop: 20 }} />
-          ) : (
-            <View>
-              <Text style={styles.listHeader}>
-                {searchQuery.length > 2
-                  ? "Wyniki wyszukiwania"
-                  : "Rekomendacje"}
-              </Text>
-              {(searchQuery.length > 2 ? places : recommendations).length ===
-              0 ? (
-                <Text style={{ textAlign: "center", marginTop: 10 }}>
-                  {searchQuery.length > 2
-                    ? "Brak wyników"
-                    : "Brak rekomendacji"}
-                </Text>
-              ) : (
-                <ScrollView
-                  style={styles.placeListContainer}
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={true}
-                >
-                  {(searchQuery.length > 2 ? places : recommendations).map(
-                    (item) => (
-                      <View key={item.providerId} style={{ marginBottom: 8 }}>
-                        <PlaceCard
-                          place={item}
-                          handleAddPress={() => handlePlaceSelect(item)}
-                          handleDetailsPress={() => handleDetailsPress(item)}
-                        />
-                      </View>
-                    ),
-                  )}
-                </ScrollView>
-              )}
-            </View>
-          )}
+          <ScrollView
+            style={styles.placeListContainer}
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={true}
+            keyboardShouldPersistTaps="handled"
+          >
+            {searchQuery.length > 0 && (
+              <>
+                <List.Item
+                  title={`Użyj nazwy "${searchQuery}"`}
+                  description="Wpisz dane ręcznie"
+                  left={(props) => <List.Icon {...props} icon="pencil" />}
+                  onPress={() => handleManualEntry(searchQuery)}
+                  style={styles.manualEntryItem}
+                />
+                <Divider style={{ marginBottom: 8 }} />
+              </>
+            )}
 
-          <Button
-            mode="text"
-            onPress={() => setShowPlaceSearch(false)}
-            style={{ marginTop: 8 }}
-          >
-            Anuluj wyszukiwanie
-          </Button>
+            {isSearching ? (
+              <ActivityIndicator style={{ margin: 20 }} />
+            ) : places.length > 0 ? (
+              places.map((item) => (
+                <View key={item.providerId} style={{ marginBottom: 8 }}>
+                  <PlaceCard
+                    place={item}
+                    handleAddPress={() => handlePlaceSelect(item)}
+                    handleDetailsPress={() => handleDetailsPress(item)}
+                  />
+                </View>
+              ))
+            ) : (
+              searchQuery.length > 2 && (
+                <Text style={{ textAlign: "center", marginTop: 10 }}>
+                  Brak wyników wyszukiwania
+                </Text>
+              )
+            )}
+          </ScrollView>
         </View>
-      ) : (
-        <View style={styles.placeButtonsContainer}>
-          <Button
-            mode="outlined"
-            icon="magnify"
-            onPress={() => setShowPlaceSearch(true)}
-            style={styles.placeButton}
+      );
+    }
+
+    if (placeEntryMode === "recommendations") {
+      return (
+        <View style={styles.searchContainer}>
+          <View style={styles.subHeaderContainer}>
+            <IconButton
+              icon="arrow-left"
+              onPress={() => setPlaceEntryMode("selection")}
+            />
+            <Text style={styles.listHeader}>Polecane dla Ciebie</Text>
+          </View>
+
+          <ScrollView
+            style={styles.placeListContainer}
+            nestedScrollEnabled={true}
+            showsVerticalScrollIndicator={true}
           >
-            Wyszukaj atrakcję
-          </Button>
-          <Button
-            mode="text"
-            onPress={() => {
-              setShowPlaceSearch(false);
-              setExpandedSections((prev) => {
-                const withoutPlace = prev.filter((id) => id !== "place");
-                if (!withoutPlace.includes("basic")) {
-                  return [...withoutPlace, "basic"];
-                }
-                return withoutPlace;
-              });
-            }}
-          >
-            Pomiń i wpisz ręcznie
-          </Button>
+            {isLoadingRecommendations ? (
+              <ActivityIndicator style={{ margin: 20 }} />
+            ) : recommendations.length > 0 ? (
+              recommendations.map((item) => (
+                <View key={item.providerId} style={{ marginBottom: 8 }}>
+                  <PlaceCard
+                    place={item}
+                    handleAddPress={() => handlePlaceSelect(item)}
+                    handleDetailsPress={() => handleDetailsPress(item)}
+                  />
+                </View>
+              ))
+            ) : (
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: theme.colors.outline,
+                  margin: 10,
+                }}
+              >
+                Brak rekomendacji
+              </Text>
+            )}
+          </ScrollView>
         </View>
-      )}
-    </>
-  );
+      );
+    }
+
+    // Default: 'selection'
+    return (
+      <View style={styles.selectionContainer}>
+        <Surface style={styles.selectionCardWrapper} elevation={1}>
+          <TouchableRipple
+            onPress={() => setPlaceEntryMode("search")}
+            style={styles.selectionCardRipple}
+          >
+            <View style={styles.selectionCardContent}>
+              <Icon source="magnify" size={24} />
+              <View style={styles.selectionTextContainer}>
+                <Text variant="titleMedium">Wyszukaj atrakcję</Text>
+                <Text variant="bodySmall" style={styles.selectionDescription}>
+                  Znajdź miejsce, które chcesz odwiedzić
+                </Text>
+              </View>
+              <Icon source="chevron-right" size={24} />
+            </View>
+          </TouchableRipple>
+        </Surface>
+
+        <Surface style={styles.selectionCardWrapper} elevation={1}>
+          <TouchableRipple
+            onPress={() => setPlaceEntryMode("recommendations")}
+            style={styles.selectionCardRipple}
+          >
+            <View style={styles.selectionCardContent}>
+              <Icon source="star-outline" size={24} />
+              <View style={styles.selectionTextContainer}>
+                <Text variant="titleMedium">Wybierz z polecanych</Text>
+                <Text variant="bodySmall" style={styles.selectionDescription}>
+                  Sprawdź co warto zobaczyć w okolicy
+                </Text>
+              </View>
+              <Icon source="chevron-right" size={24} />
+            </View>
+          </TouchableRipple>
+        </Surface>
+
+        <Surface style={styles.selectionCardWrapper} elevation={1}>
+          <TouchableRipple
+            onPress={() => handleManualEntry()}
+            style={styles.selectionCardRipple}
+          >
+            <View style={styles.selectionCardContent}>
+              <Icon source="pencil-outline" size={24} />
+              <View style={styles.selectionTextContainer}>
+                <Text variant="titleMedium">Wpisz ręcznie</Text>
+                <Text variant="bodySmall" style={styles.selectionDescription}>
+                  Samodzielnie uzupełnij wszystkie dane
+                </Text>
+              </View>
+              <Icon source="chevron-right" size={24} />
+            </View>
+          </TouchableRipple>
+        </Surface>
+      </View>
+    );
+  };
 
   const renderBasicSection = () => {
     return (
@@ -808,6 +914,34 @@ const createStyles = (theme: MD3ThemeExtended) =>
     sectionContent: {
       gap: 8,
     },
+    selectionContainer: {
+      gap: 12,
+      paddingVertical: 8,
+    },
+    selectionCardWrapper: {
+      backgroundColor: theme.colors.elevation.level1,
+      borderRadius: 12,
+      overflow: "hidden",
+    },
+    selectionCardRipple: {
+      padding: 12,
+    },
+    selectionCardContent: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    selectionTextContainer: {
+      flex: 1,
+      marginLeft: 16,
+    },
+    selectionDescription: {
+      color: theme.colors.onSurfaceVariant,
+    },
+    subHeaderContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 8,
+    },
     input: {
       backgroundColor: theme.colors.surface,
     },
@@ -880,6 +1014,12 @@ const createStyles = (theme: MD3ThemeExtended) =>
     },
     houseNumberInput: {
       flex: 1,
+    },
+    manualEntryItem: {
+      paddingLeft: 0,
+      backgroundColor: theme.colors.elevation.level1,
+      borderRadius: 8,
+      marginBottom: 8,
     },
   });
 
