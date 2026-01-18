@@ -86,6 +86,7 @@ const TripDetailsView = () => {
   };
   const { trip_id, refresh } = useLocalSearchParams();
   const navigation = useNavigation();
+  const [showDetails, setShowDetails] = useState(true);
 
   const {
     tripDetails,
@@ -356,6 +357,8 @@ const TripDetailsView = () => {
             title="Szczegóły i koszty"
             style={styles.detailsAccordion}
             titleStyle={styles.detailsAccordionTitle}
+            expanded={showDetails}
+            onPress={() => setShowDetails((prev) => !prev)}
           >
             <View style={styles.detailsContainer}>
               {tripViewModel &&

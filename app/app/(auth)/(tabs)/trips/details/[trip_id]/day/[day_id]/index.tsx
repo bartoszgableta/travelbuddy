@@ -4,19 +4,17 @@
 //   return <TripDayView />;
 // }
 
-import TripDayView from "@/views/TripDayView";
 import TripDayViewForScroll from "@/views/TripDayViewForScroll";
-import useAppSettings from "@/hooks/useAppSettings";
 import {
   StyleSheet,
   View,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Text, useTheme } from "react-native-paper";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useTripDetails } from "@/composables/useTripDetails";
 import { type TripDay } from "@/types/Trip";
 import { MD3ThemeExtended } from "@/constants/Themes";
@@ -47,19 +45,55 @@ const TripDayNavbarWrapper = () => {
 
   const handleDayPress = (dayId: string) => {
     setSelectedDayId(dayId);
+    const index = sortedDays.findIndex((day) => day.id === dayId);
+    if (index !== -1) {
+      flatListRef.current?.scrollToIndex({
+        index,
+        animated: true,
+        viewPosition: 0.5,
+      });
+    }
   };
+
+  const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    if (sortedDays.length > 0 && selectedDayId) {
+      const index = sortedDays.findIndex((day) => day.id === selectedDayId);
+      if (index !== -1) {
+        // Wait a bit for layout to be ready
+        flatListRef.current?.scrollToIndex({
+          index,
+          animated: false,
+          viewPosition: 0.5,
+        });
+        setTimeout(() => {}, 100);
+      }
+    }
+  }, [sortedDays]);
 
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
-        <ScrollView
+        <FlatList
+          ref={flatListRef}
+          data={sortedDays}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.navbarContent}
-        >
-          {sortedDays.map((day: TripDay, index: number) => (
+          keyExtractor={(item) => item.id}
+          onScrollToIndexFailed={(info) => {
+            const wait = new Promise((resolve) => setTimeout(resolve, 100));
+            wait.then(() => {
+              flatListRef.current?.scrollToIndex({
+                index: info.index,
+                animated: false,
+                viewPosition: 0.5,
+              });
+            });
+          }}
+          renderItem={({ item: day, index }) => (
             <TouchableOpacity
-              key={day.id}
               style={[
                 styles.dayTab,
                 selectedDayId === day.id && styles.dayTabSelected,
@@ -86,8 +120,8 @@ const TripDayNavbarWrapper = () => {
                 })}
               </Text>
             </TouchableOpacity>
-          ))}
-        </ScrollView>
+          )}
+        />
       </View>
 
       {selectedDayId && (
@@ -96,94 +130,6 @@ const TripDayNavbarWrapper = () => {
           day_id={selectedDayId}
         />
       )}
-    </View>
-  );
-};
-
-// Version B: Horizontal scroll with embedded TripDay
-const TripDayScrollWrapper = () => {
-  const theme = useTheme();
-  const styles = useMemo(
-    () => createScrollStyles(theme as MD3ThemeExtended),
-    [theme],
-  );
-  const { trip_id } = useLocalSearchParams();
-
-  const { tripDetails } = useTripDetails(trip_id as string);
-
-  const sortedDays = useMemo(() => {
-    return [...(tripDetails?.tripDays || [])].sort((a, b) =>
-      a.date.localeCompare(b.date),
-    );
-  }, [tripDetails]);
-
-  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
-
-  const scrollViewRef = React.useRef<ScrollView>(null);
-
-  const currentIndex = useMemo(() => {
-    return sortedDays.findIndex((day, idx) => idx === selectedDayIndex);
-  }, [sortedDays, selectedDayIndex]);
-  // Scroll to current day on mount
-  useEffect(() => {
-    if (currentIndex >= 0 && scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({
-        x: currentIndex * width,
-        animated: false,
-      });
-    }
-  }, [currentIndex]);
-
-  const handleScroll = (event: any) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / width);
-    if (index !== currentIndex && index >= 0 && index < sortedDays.length) {
-      setSelectedDayIndex(index);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={handleScroll}
-        scrollEventThrottle={16}
-      >
-        {sortedDays.map((day: TripDay, index: number) => (
-          <View key={day.id} style={styles.dayContainer}>
-            <View style={styles.dayHeader}>
-              <Text style={styles.dayTitle}>Dzień {index + 1}</Text>
-              <Text style={styles.dayDate}>
-                {new Date(day.date).toLocaleDateString("pl-PL", {
-                  day: "numeric",
-                  month: "long",
-                })}
-              </Text>
-            </View>
-            {index === selectedDayIndex && (
-              <TripDayViewForScroll
-                trip_id={Array.isArray(trip_id) ? trip_id[0] : trip_id}
-                day_id={day.id}
-              />
-            )}
-          </View>
-        ))}
-      </ScrollView>
-
-      <View style={styles.pagination}>
-        {sortedDays.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.paginationDot,
-              index === currentIndex && styles.paginationDotActive,
-            ]}
-          />
-        ))}
-      </View>
     </View>
   );
 };
