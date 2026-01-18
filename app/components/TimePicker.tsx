@@ -38,14 +38,13 @@ const TimePicker: React.FC<TimePickerProps> = ({
   style,
   inputStyle,
 }) => {
-  const [timeString, setTimeString] = useState<string>(formatTime(date));
-
   const onChange = (event: DateTimePickerEvent, selectedTime?: Date) => {
     const currentTime = selectedTime || date;
     setShowPicker(false);
     onDateChange(currentTime);
-    setTimeString(formatTime(currentTime));
   };
+
+  const timeString = formatTime(date);
 
   return (
     <View style={styles.container}>

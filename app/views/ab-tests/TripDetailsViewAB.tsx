@@ -313,7 +313,7 @@ const TripDetailsView = () => {
                 }
               }}
             >
-              Planuj dni
+              Przeglądaj dni
             </Button>
           </View>
 

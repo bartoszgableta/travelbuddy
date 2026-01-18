@@ -381,6 +381,13 @@ const AddingTripPointViewB = () => {
     }
   };
 
+  const handleStartTimeChange = (date: Date) => {
+    setStartTime(date);
+    if (date.getTime() > endTime.getTime()) {
+      setEndTime(date);
+    }
+  };
+
   const renderSectionIcon = (sectionId: SectionId, defaultIcon: string) => {
     return <List.Icon icon={defaultIcon} />;
   };
@@ -488,57 +495,59 @@ const AddingTripPointViewB = () => {
     </>
   );
 
-  const renderBasicSection = () => (
-    <View style={styles.sectionContent}>
-      <TextInput
-        label="Nazwa punktu*"
-        value={tripPointName}
-        onChangeText={(text) => {
-          setTripPointName(text);
-          setNameError(text.trim().length === 0);
-        }}
-        mode="outlined"
-        error={nameError}
-        style={styles.input}
-      />
-      {nameError && (
-        <Text style={styles.textError}>Nazwa punktu jest wymagana</Text>
-      )}
+  const renderBasicSection = () => {
+    return (
+      <View style={styles.sectionContent}>
+        <TextInput
+          label="Nazwa punktu*"
+          value={tripPointName}
+          onChangeText={(text) => {
+            setTripPointName(text);
+            setNameError(text.trim().length === 0);
+          }}
+          mode="outlined"
+          error={nameError}
+          style={styles.input}
+        />
+        {nameError && (
+          <Text style={styles.textError}>Nazwa punktu jest wymagana</Text>
+        )}
 
-      <TripPointTypePicker
-        selectedCategory={tripPointCategory}
-        onPress={() => setIsCategorySheetVisible(true)}
-      />
+        <TripPointTypePicker
+          selectedCategory={tripPointCategory}
+          onPress={() => setIsCategorySheetVisible(true)}
+        />
 
-      <View style={styles.timeRow}>
-        <View style={styles.timePickerContainer}>
-          <TimePicker
-            date={startTime}
-            showPicker={isStartTimePickerVisible}
-            setShowPicker={setIsStartTimePickerVisible}
-            onDateChange={setStartTime}
-            label="Od"
-            style={{ width: "100%" }}
-            inputStyle={{ width: "100%" }}
-            error={!!timeError}
-          />
+        <View style={styles.timeRow}>
+          <View style={styles.timePickerContainer}>
+            <TimePicker
+              date={startTime}
+              showPicker={isStartTimePickerVisible}
+              setShowPicker={setIsStartTimePickerVisible}
+              onDateChange={handleStartTimeChange}
+              label="Od"
+              style={{ width: "100%" }}
+              inputStyle={{ width: "100%" }}
+              error={!!timeError}
+            />
+          </View>
+          <View style={styles.timePickerContainer}>
+            <TimePicker
+              date={endTime}
+              showPicker={isEndTimePickerVisible}
+              setShowPicker={setIsEndTimePickerVisible}
+              onDateChange={setEndTime}
+              label="Do"
+              style={{ width: "100%" }}
+              inputStyle={{ width: "100%" }}
+              error={!!timeError}
+            />
+          </View>
         </View>
-        <View style={styles.timePickerContainer}>
-          <TimePicker
-            date={endTime}
-            showPicker={isEndTimePickerVisible}
-            setShowPicker={setIsEndTimePickerVisible}
-            onDateChange={setEndTime}
-            label="Do"
-            style={{ width: "100%" }}
-            inputStyle={{ width: "100%" }}
-            error={!!timeError}
-          />
-        </View>
+        {timeError && <Text style={styles.textError}>{timeError}</Text>}
       </View>
-      {timeError && <Text style={styles.textError}>{timeError}</Text>}
-    </View>
-  );
+    );
+  };
 
   const renderAddressSection = () => (
     <View style={styles.sectionContent}>
